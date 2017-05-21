@@ -58,10 +58,9 @@ class TLStickerPickerView: UIVisualEffectView {
         collectionView!.backgroundColor = UIColor.clear
         collectionView!.delegate = self
         collectionView!.dataSource = self;
-        collectionView!.contentInset = UIEdgeInsets.init(top: 20, left: 10, bottom: 200, right: 10)
+        collectionView!.contentInset = UIEdgeInsets.init(top: 20, left: 10, bottom: self.height - 380, right: 10)
         collectionView!.register(TLStickerCell.self, forCellWithReuseIdentifier: "cell")
         self.addSubview(collectionView!)
-        self.collectionView?.reloadData()
         
         self.addSubview(handleBgView)
         handleBgView.frame = CGRect.init(x: 0, y: 0, width: self.width, height: 30)
@@ -90,7 +89,7 @@ class TLStickerPickerView: UIVisualEffectView {
                 UIView.animate(withDuration: 0.3, animations: {
                     self.y = UIScreen.main.bounds.height
                 }, completion: { (x) in
-                    self.collectionView?.contentInset = UIEdgeInsets.init(top: 20, left: 10, bottom: 200, right: 10)
+                    self.collectionView?.contentInset = UIEdgeInsets.init(top: 20, left: 10, bottom: self.height - 380, right: 10)
                     self.collectionView?.removeGestureRecognizer(self.pincheGesture!)
                     if let delegate = self.delegate {
                         delegate.stickerPickerHidden(view: self)
@@ -137,7 +136,7 @@ extension TLStickerPickerView:UICollectionViewDelegate, UICollectionViewDataSour
         UIView.animate(withDuration: 0.3, animations: {
             self.y = UIScreen.main.bounds.height
         }, completion: { (x) in
-            self.collectionView?.contentInset = UIEdgeInsets.init(top: 20, left: 10, bottom: 200, right: 10)
+            self.collectionView?.contentInset = UIEdgeInsets.init(top: 20, left: 10, bottom: self.height - 380, right: 10)
             self.collectionView?.removeGestureRecognizer(self.pincheGesture!)
             if let delegate = self.delegate {
                 delegate.stickerPickerDidSelectedStickers(img: cell.imgView.image!)
@@ -156,6 +155,10 @@ extension TLStickerPickerView: UIScrollViewDelegate {
             }
             pincheGesture = UIPanGestureRecognizer.init(target: self, action: #selector(pincheAction))
             scrollView.addGestureRecognizer(pincheGesture!)
+        }else {
+            if let p = pincheGesture {
+                self.collectionView?.removeGestureRecognizer(p)
+            }
         }
     }
 }
