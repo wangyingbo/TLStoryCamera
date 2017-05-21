@@ -8,6 +8,7 @@
 
 import UIKit
 import GPUImage
+import Photos
 
 class TLStoryPhotoView: TLStoryPreviewView {
     fileprivate var imgView = UIImageView.init()
@@ -62,8 +63,12 @@ class TLStoryPhotoView: TLStoryPreviewView {
             let u = URL.init(fileURLWithPath: p)
             do {
                 try imgData?.write(to: u)
-                self.closeAction()
-                self.delegate?.storyPreviewClose()
+                PHPhotoLibrary.shared().performChanges({
+                    PHAssetChangeRequest.creationRequestForAssetFromImage(atFileURL: u)
+                }, completionHandler: { (x, e) in
+                    self.closeAction()
+                    self.delegate?.storyPreviewClose()
+                })
             } catch {
                 
             }

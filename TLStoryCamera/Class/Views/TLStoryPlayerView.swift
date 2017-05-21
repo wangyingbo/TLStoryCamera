@@ -117,15 +117,16 @@ class TLStoryPlayerView: TLStoryPreviewView {
             landBlendFilter.removeTarget(strongSelf.movieWriter)
             strongSelf.movieWriter?.finishRecording()
             
-//            guard let p = filePath, let url = URL.init(string: p) else {
-//                return
-//            }
+            guard let p = filePath, let url = URL.init(string: p) else {
+                return
+            }
             
-            self?.delegate?.storyPreviewClose()
-//            
-//            PHPhotoLibrary.shared().performChanges({ 
-//                PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: url)
-//            }, completionHandler: nil)
+            PHPhotoLibrary.shared().performChanges({
+                PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: url)
+            }, completionHandler: { (x, e) in
+                self?.closeAction()
+                self?.delegate?.storyPreviewClose()
+            })
         }
     }
         
