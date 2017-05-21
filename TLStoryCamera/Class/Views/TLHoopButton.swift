@@ -55,7 +55,7 @@ class TLHoopButton: UIControl {
     fileprivate lazy var gradientLayer:CAGradientLayer = {
         var gradientLayer = CAGradientLayer()
         gradientLayer.frame = self.bounds
-        gradientLayer.colors = [UIColor.init(colorHex: 0x0056ff).cgColor, UIColor.init(colorHex: 0x0056ff).cgColor]
+        gradientLayer.colors = [UIColor.red.cgColor, UIColor.orange.cgColor]
         gradientLayer.startPoint = CGPoint.init(x: 0, y: 0.5)
         gradientLayer.endPoint = CGPoint.init(x: 1, y: 0.5)
         return gradientLayer

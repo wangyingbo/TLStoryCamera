@@ -31,6 +31,8 @@ class TLStoryTextEditerView: UIView {
     
     fileprivate var textToolsBar:TLStoryTextInputToolsBar?
     
+    fileprivate var tap:UITapGestureRecognizer?
+        
     deinit {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
@@ -76,6 +78,9 @@ class TLStoryTextEditerView: UIView {
             inputTextView.textColor = UIColor.white
         }
         
+        tap = UITapGestureRecognizer.init(target: self, action: #selector(competeEdit))
+        self.addGestureRecognizer(tap!)
+        
         inputTextView.becomeFirstResponder()
     }
     
@@ -105,6 +110,29 @@ class TLStoryTextEditerView: UIView {
         }
         
         self.delegate?.textEditerKeyboard(hidden: true, offsetY: 0)
+    }
+    
+    func competeEdit() {
+        if let s = editingSticker {
+            s.font = inputTextView.font
+            s.text = inputTextView.text
+            s.textColor = inputTextView.textColor
+            s.textAlignment = inputTextView.textAlignment
+        }else {
+            let sticker = TLStickerTextView.init(frame: self.inputTextView.bounds)
+            sticker.center = inputTextView.center
+            sticker.font = inputTextView.font
+            sticker.text = inputTextView.text
+            sticker.textColor = inputTextView.textColor
+            sticker.textAlignment = inputTextView.textAlignment
+            self.delegate?.textEditerDidCompleteEdited(sticker: sticker, isNew: true)
+        }
+        
+        self.inputTextView.resignFirstResponder()
+        
+        if let t = tap {
+            self.removeGestureRecognizer(t)
+        }
     }
     
     func showAnim(to point:CGPoint) {
@@ -167,7 +195,9 @@ extension TLStoryTextEditerView: CAAnimationDelegate {
     func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         self.inputTextView.center = self.editingSticker!.center
         self.inputTextView.layer.removeAllAnimations()
-        self.delegate?.textEditerDidCompleteEdited(sticker: editingSticker!, isNew: false)
+        if let s = editingSticker {
+            self.delegate?.textEditerDidCompleteEdited(sticker: s, isNew: false)
+        }
         self.editingSticker = nil
         self.isHidden = true
     }
@@ -185,7 +215,7 @@ extension TLStoryTextEditerView: UITextViewDelegate {
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if text == "\n" {
-            self.textInputToolsBarConfirm()
+            self.competeEdit()
             return false
         }
         return true
@@ -198,22 +228,7 @@ extension TLStoryTextEditerView: TLStoryTextInputToolsBarDelegate {
     }
     
     func textInputToolsBarConfirm() {
-        if let s = editingSticker {
-            s.font = inputTextView.font
-            s.text = inputTextView.text
-            s.textColor = inputTextView.textColor
-            s.textAlignment = inputTextView.textAlignment
-        }else {
-            let sticker = TLStickerTextView.init(frame: self.inputTextView.bounds)
-            sticker.center = inputTextView.center
-            sticker.font = inputTextView.font
-            sticker.text = inputTextView.text
-            sticker.textColor = inputTextView.textColor
-            sticker.textAlignment = inputTextView.textAlignment
-            self.delegate?.textEditerDidCompleteEdited(sticker: sticker, isNew: true)
-        }
-        
-        inputTextView.resignFirstResponder()
+        self.competeEdit()
     }
 }
 

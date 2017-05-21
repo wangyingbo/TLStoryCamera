@@ -31,6 +31,8 @@ class TLColorPaletteView: UIView {
         btn.setImage(#imageLiteral(resourceName: "story_publish_icon_drawing_tool_size"), for: .normal)
         btn.backgroundColor = UIColor.white
         btn.layer.cornerRadius = 15
+        btn.layer.borderColor = UIColor.white.cgColor
+        btn.layer.borderWidth = 2
         return btn
     }()
     
@@ -102,8 +104,8 @@ class TLColorPaletteView: UIView {
     func setDefault(color:UIColor?) {
         if let c = color {
             for (i,array) in colors.enumerated() {
-                if let j = array.index(of: c) {
-                    collectionView?.scrollToItem(at: IndexPath.init(row: j, section: i), at: .left, animated: false)
+                if let _ = array.index(of: c) {
+                    collectionView?.scrollToItem(at: IndexPath.init(row: 0, section: i), at: .left, animated: false)
                     sliderBtn.backgroundColor = c
                     break
                 }
