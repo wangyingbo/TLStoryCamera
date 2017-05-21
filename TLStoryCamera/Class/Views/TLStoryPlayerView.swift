@@ -128,7 +128,7 @@ class TLStoryPlayerView: TLStoryPreviewView {
 //            }, completionHandler: nil)
         }
     }
-    
+        
     override func hideAllIcons() {
         UIView.animate(withDuration: 0.15) {
             self.audioEnableBtn.alpha = 0

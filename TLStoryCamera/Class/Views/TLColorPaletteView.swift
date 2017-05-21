@@ -79,11 +79,16 @@ class TLColorPaletteView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        let layout = TLColorPaletteCollectionViewFlowLayout.init()
+        let layout = UICollectionViewFlowLayout.init()
+        layout.itemSize = CGSize.init(width: (self.width - 40) / 9, height: 30)
+        layout.minimumLineSpacing = 0.01
+        layout.scrollDirection = .horizontal
+
         collectionView = UICollectionView.init(frame: CGRect.init(x: 40, y: 15, width: self.width - 40, height: 30), collectionViewLayout: layout)
         collectionView!.backgroundColor = UIColor.clear
         collectionView!.delegate = self
         collectionView!.dataSource = self;
+        collectionView!.isPagingEnabled = true
         collectionView!.showsHorizontalScrollIndicator = false
         collectionView!.register(TLColorPaletteCell.self, forCellWithReuseIdentifier: "cell")
         collectionView!.contentSize = CGSize.init(width: self.width - 45, height: 30)
@@ -146,45 +151,8 @@ extension TLColorPaletteView: UICollectionViewDelegate, UICollectionViewDataSour
         self.delegate?.colorPaletteDidSelected(color: color)
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize.init(width: 10, height: 0)
-    }
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-        return CGSize.init(width: 10, height: 0)
-    }
-    
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         self.pageControl.currentPage = Int(scrollView.contentOffset.x / scrollView.width)
-    }
-}
-
-class TLColorPaletteCollectionViewFlowLayout: UICollectionViewFlowLayout{
-    override init() {
-        super.init()
-        self.itemSize = CGSize.init(width: 20, height: 20)
-        self.minimumInteritemSpacing = 10
-        self.scrollDirection = .horizontal
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
-        return true
-    }
-    override func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint, withScrollingVelocity velocity: CGPoint) -> CGPoint {
-        
-        let width = self.collectionView!.width
-        
-        if proposedContentOffset.x < width / 2 {
-            return CGPoint.init(x: 0, y: proposedContentOffset.y)
-        }
-        
-        if proposedContentOffset.x > width / 2 && proposedContentOffset.x < width * 1.5 {
-            return CGPoint.init(x: width, y: proposedContentOffset.y)
-        }
-        
-        return CGPoint.init(x: width * 2 + 5, y: proposedContentOffset.y)
     }
 }
 
@@ -201,8 +169,9 @@ class TLColorPaletteCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        colorView.frame = self.bounds
-        colorView.layer.cornerRadius = self.width / 2
+        colorView.bounds = CGRect.init(x: 0, y: 0, width: 20, height: 20)
+        colorView.center = CGPoint.init(x: self.width / 2, y: self.height / 2)
+        colorView.layer.cornerRadius = colorView.width / 2
         colorView.layer.masksToBounds = true
         colorView.layer.borderColor = UIColor.white.cgColor
         colorView.layer.borderWidth = 2
