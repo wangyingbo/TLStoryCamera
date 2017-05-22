@@ -9,8 +9,8 @@
 import UIKit
 
 protocol TLStickerStageViewDelegate:NSObjectProtocol {
-    func hideIcons(_ hidden:Bool)
-    func editing(textSticker:TLStickerTextView)
+    func stickerStageStickerDragging(_ dragging:Bool)
+    func stickerStageTextEditing(textSticker:TLStickerTextView)
 }
 
 class TLStickerStageView: UIView {
@@ -67,21 +67,32 @@ class TLStickerStageView: UIView {
     }
 }
 
+extension TLStickerStageView: TLStickerTextViewDelegate {
+    func stickerTextViewEditing(sticker: TLStickerTextView) {
+        self.delegate?.stickerStageTextEditing(textSticker: sticker)
+    }
+}
+
 extension TLStickerStageView : TLStickerViewDelegate {
-    func stickerEditing(sticker: TLStickerTextView) {
-        self.delegate?.editing(textSticker: sticker)
+    func stickerViewBecomeFirstRespond(sticker: UIView) {
+        for v in stickers {
+            if v == sticker {
+                self.bringSubview(toFront: v)
+                break;
+            }
+        }
     }
 
-    func panDeleteSticker(point: CGPoint, sticker: UIView, isEnd: Bool) {
+    func stickerViewDraggingDelete(point: CGPoint, sticker: UIView, isEnd: Bool) {
         let cPoint = self.convert(point, to: deleteImgView)
         if self.deleteImgView.point(inside: cPoint, with: nil) {
             if !isPrepareDelete {
-                (sticker as! TLStickerViewProtocol).zoom(out: true)
+                (sticker as! TLStickerViewZoomProtocol).zoom(out: true)
                 isPrepareDelete = true
             }
         }else {
             if isPrepareDelete {
-                (sticker as! TLStickerViewProtocol).zoom(out: false)
+                (sticker as! TLStickerViewZoomProtocol).zoom(out: false)
                 isPrepareDelete = false
             }
         }
@@ -98,15 +109,6 @@ extension TLStickerStageView : TLStickerViewDelegate {
         
         self.deleteImgView.isHidden = isEnd
         
-        self.delegate?.hideIcons(!isEnd)
-    }
-    
-    func makeStickerBecomeFirstRespond(sticker: UIView) {
-        for v in stickers {
-            if v == sticker {
-                self.bringSubview(toFront: v)
-                break;
-            }
-        }
+        self.delegate?.stickerStageStickerDragging(!isEnd)
     }
 }

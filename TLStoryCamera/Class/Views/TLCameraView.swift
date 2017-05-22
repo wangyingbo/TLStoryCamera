@@ -10,7 +10,7 @@ import UIKit
 import GPUImage
 
 class TLCameraView: GPUImageView {
-    fileprivate var videoCamera = GPUImageStillCamera.init(sessionPreset: AVCaptureSessionPreset1280x720, cameraPosition: .back)
+    fileprivate var videoCamera = GPUImageStillCamera.init(sessionPreset: TLStoryConfiguration.captureSessionPreset, cameraPosition: .back)
     fileprivate var filterView:GPUImageView?
     fileprivate var beautifyFilter = TLStoryConfiguration.openBeauty ? GPUImageBeautifyFilter.init() : GPUImageFilter.init()
     fileprivate var movieWriter:GPUImageMovieWriter?
@@ -77,7 +77,8 @@ class TLCameraView: GPUImageView {
     
     public func initRecording() {
         currentVideoPath = getVideoFilePath()
-        movieWriter = GPUImageMovieWriter.init(movieURL: self.currentVideoPath, size: CGSize.init(width: 720, height: 1280), fileType: AVFileTypeMPEG4, outputSettings: TLStoryConfiguration.videoSetting)
+        let size = CGSize.init(width: TLStoryConfiguration.videoSetting["AVVideoWidthKey"] as! Int, height: TLStoryConfiguration.videoSetting["AVVideoHeightKey"] as! Int)
+        movieWriter = GPUImageMovieWriter.init(movieURL: self.currentVideoPath, size: size, fileType: TLStoryConfiguration.videoFileType, outputSettings: TLStoryConfiguration.videoSetting)
         movieWriter?.setHasAudioTrack(true, audioSettings: TLStoryConfiguration.audioSetting)
         beautifyFilter.addTarget(self.movieWriter!)
         videoCamera?.audioEncodingTarget = movieWriter
@@ -161,7 +162,7 @@ class TLCameraView: GPUImageView {
     }
     
     fileprivate func getVideoFilePath() -> URL {
-        let path = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first?.appending("/storyvideo")
+        let path = TLStoryConfiguration.videoPath
         let filePath = path?.appending("/\(Int(Date().timeIntervalSince1970)).mp4")
         do {
             try FileManager.default.createDirectory(atPath: path!, withIntermediateDirectories: true, attributes: nil)
@@ -172,7 +173,7 @@ class TLCameraView: GPUImageView {
     }
     
     fileprivate func getPhotoFilePath() -> URL {
-        let path = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first?.appending("/storyphoto")
+        let path = TLStoryConfiguration.photoPath
         let filePath = path?.appending("/\(Int(Date().timeIntervalSince1970)).png")
         do {
             try FileManager.default.createDirectory(atPath: path!, withIntermediateDirectories: true, attributes: nil)

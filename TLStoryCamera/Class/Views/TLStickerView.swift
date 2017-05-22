@@ -8,11 +8,11 @@
 
 import UIKit
 
-protocol TLStickerViewProtocol {
+protocol TLStickerViewZoomProtocol {
     func zoom(out:Bool)
 }
 
-extension TLStickerViewProtocol where Self: UIView {
+extension TLStickerViewZoomProtocol where Self: UIView {
     func zoom(out:Bool) {
         if out {
             UIView.animate(withDuration: 0.25, animations: {
@@ -29,12 +29,11 @@ extension TLStickerViewProtocol where Self: UIView {
 }
 
 protocol TLStickerViewDelegate:NSObjectProtocol {
-    func makeStickerBecomeFirstRespond(sticker:UIView)
-    func panDeleteSticker(point:CGPoint,sticker:UIView,isEnd:Bool)
-    func stickerEditing(sticker:TLStickerTextView)
+    func stickerViewBecomeFirstRespond(sticker:UIView)
+    func stickerViewDraggingDelete(point:CGPoint,sticker:UIView,isEnd:Bool)
 }
 
-class TLStickerView: UIImageView, TLStickerViewProtocol {
+class TLStickerView: UIImageView, TLStickerViewZoomProtocol {
     static let DefaultWidth = 100
     var minWidth:CGFloat = 0
     var minHeight:CGFloat = 0
@@ -79,7 +78,7 @@ class TLStickerView: UIImageView, TLStickerViewProtocol {
         self.center = newP
         gesture.setTranslation(CGPoint.zero, in: superview)
         
-        self.delegate?.panDeleteSticker(point: newP, sticker: self, isEnd: gesture.state == .ended || gesture.state == .cancelled)
+        self.delegate?.stickerViewDraggingDelete(point: newP, sticker: self, isEnd: gesture.state == .ended || gesture.state == .cancelled)
     }
     
     @objc func tap(gesture:UITapGestureRecognizer) {
@@ -99,11 +98,11 @@ class TLStickerView: UIImageView, TLStickerViewProtocol {
         
         self.layer.add(groupAnim, forKey: nil)
 
-        self.delegate?.makeStickerBecomeFirstRespond(sticker: self)
+        self.delegate?.stickerViewBecomeFirstRespond(sticker: self)
     }
     
     @objc func pinche(pinche:UIPinchGestureRecognizer) {
-        self.delegate?.makeStickerBecomeFirstRespond(sticker: self)
+        self.delegate?.stickerViewBecomeFirstRespond(sticker: self)
         
         if(pinche.state == .ended) {
             lastScale = 1.0
@@ -120,8 +119,7 @@ class TLStickerView: UIImageView, TLStickerViewProtocol {
     }
     
     @objc func rotate(rotate:UIRotationGestureRecognizer) {
-        self.delegate?.makeStickerBecomeFirstRespond(sticker: self)
-        
+        self.delegate?.stickerViewBecomeFirstRespond(sticker: self)
         self.transform = self.transform.rotated(by: rotate.rotation)
         rotate.rotation = 0
     }

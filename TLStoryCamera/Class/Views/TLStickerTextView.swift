@@ -8,8 +8,12 @@
 
 import UIKit
 
-class TLStickerTextView: UILabel, TLStickerViewProtocol {
-    weak var delegate:TLStickerViewDelegate?
+protocol TLStickerTextViewDelegate: TLStickerViewDelegate {
+    func stickerTextViewEditing(sticker:TLStickerTextView)
+}
+
+class TLStickerTextView: UILabel, TLStickerViewZoomProtocol {
+    weak var delegate:TLStickerTextViewDelegate?
     
     var lastPosition:CGPoint = CGPoint.zero
     
@@ -48,16 +52,16 @@ class TLStickerTextView: UILabel, TLStickerViewProtocol {
         self.center = newP
         gesture.setTranslation(CGPoint.zero, in: superview)
         
-        self.delegate?.panDeleteSticker(point: newP, sticker: self, isEnd: gesture.state == .ended)
+        self.delegate?.stickerViewDraggingDelete(point: newP, sticker: self, isEnd: gesture.state == .ended)
     }
     
     @objc func tap(tap:UITapGestureRecognizer) {
-        self.delegate?.makeStickerBecomeFirstRespond(sticker: self)
-        self.delegate?.stickerEditing(sticker: self)
+        self.delegate?.stickerViewBecomeFirstRespond(sticker: self)
+        self.delegate?.stickerTextViewEditing(sticker: self)
     }
     
     @objc func pinche(pinche:UIPinchGestureRecognizer) {
-        self.delegate?.makeStickerBecomeFirstRespond(sticker: self)
+        self.delegate?.stickerViewBecomeFirstRespond(sticker: self)
         
         if(pinche.state == .ended) {
             lastScale = 1.0
@@ -74,7 +78,7 @@ class TLStickerTextView: UILabel, TLStickerViewProtocol {
     }
     
     @objc func rotate(rotate:UIRotationGestureRecognizer) {
-        self.delegate?.makeStickerBecomeFirstRespond(sticker: self)
+        self.delegate?.stickerViewBecomeFirstRespond(sticker: self)
         self.transform = self.transform.rotated(by: rotate.rotation)
         rotate.rotation = 0
     }

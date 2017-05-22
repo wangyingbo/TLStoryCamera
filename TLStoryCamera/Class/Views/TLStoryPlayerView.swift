@@ -80,10 +80,9 @@ class TLStoryPlayerView: TLStoryPreviewView {
         movieFile?.runBenchmark = true
         movieFile?.playAtActualSpeed = true
         
-        let path = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first?.appending("/storyvideo")
-        let filePath = path?.appending("/\(Int(Date().timeIntervalSince1970))_temp.mp4")
+        let filePath = TLStoryConfiguration.videoPath?.appending("/\(Int(Date().timeIntervalSince1970))_temp.mp4")
         
-        movieWriter = GPUImageMovieWriter.init(movieURL: URL.init(fileURLWithPath: filePath!), size: CGSize.init(width: 720, height: 1240))
+        movieWriter = GPUImageMovieWriter.init(movieURL: URL.init(fileURLWithPath: filePath!), size: TLStoryConfiguration.outputVideoSize)
         movieWriter?.shouldPassthroughAudio = !self.audioEnableBtn.isSelected
         movieFile?.audioEncodingTarget = movieWriter
         movieFile?.enableSynchronizedEncoding(using: movieWriter)

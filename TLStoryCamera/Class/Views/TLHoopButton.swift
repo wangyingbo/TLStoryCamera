@@ -110,7 +110,7 @@ class TLHoopButton: UIControl {
         timer = nil
         
         if let delegate = delegete {
-            delegate.hoopComplete(hoopButton: self, type: progress < 30 ? .photo : .video)
+            delegate.hoopComplete(hoopButton: self, type: progress < CGFloat(TLStoryConfiguration.minRecordingTime) ? .photo : .video)
         }
         percent = 0
         progress = 0

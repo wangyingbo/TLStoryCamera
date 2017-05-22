@@ -217,19 +217,19 @@ extension TLStoryPreviewView:TLStickerPickerViewDelegate {
 }
 
 extension TLStoryPreviewView: TLStickerStageViewDelegate {
-    func editing(textSticker: TLStickerTextView) {
-        textSticker.isHidden = true
-        self.colorPalette!.setDefault(color: textSticker.textColor)
-        self.textEditer?.show(sticker: textSticker)
-        self.hideAllIcons()
-    }
-
-    func hideIcons(_ hidden: Bool) {
-        if hidden {
+    func stickerStageStickerDragging(_ dragging: Bool) {
+        if dragging {
             self.hideAllIcons()
         }else {
             self.showAllIcons()
         }
+    }
+    
+    func stickerStageTextEditing(textSticker: TLStickerTextView) {
+        textSticker.isHidden = true
+        self.colorPalette!.setDefault(color: textSticker.textColor)
+        self.textEditer?.show(sticker: textSticker)
+        self.hideAllIcons()
     }
 }
 
@@ -259,7 +259,7 @@ extension TLStoryPreviewView: TLStoryDrawToolBarDelegate {
 }
 
 extension TLStoryPreviewView: TLSliderDelegate {
-    func sliderSliding(ratio: CGFloat) {
+    func sliderDragging(ratio: CGFloat) {
         if isDrawing {
             let lineWidth = (TLStoryConfiguration.maxDrawLineWeight - TLStoryConfiguration.minDrawLineWeight) * ratio + TLStoryConfiguration.minDrawLineWeight
             self.drawView?.lineWidth = lineWidth

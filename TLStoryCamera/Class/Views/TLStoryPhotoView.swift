@@ -56,8 +56,7 @@ class TLStoryPhotoView: TLStoryPreviewView {
         let resultImg = self.imgView.image?.imageMontage(img: img)
         let imgData = UIImagePNGRepresentation(resultImg!)
         
-        let path = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first?.appending("/storyphoto")
-        let filePath = path?.appending("/\(Int(Date().timeIntervalSince1970))_temp.png")
+        let filePath = TLStoryConfiguration.photoPath?.appending("/\(Int(Date().timeIntervalSince1970))_temp.png")
         
         if let p = filePath {
             let u = URL.init(fileURLWithPath: p)

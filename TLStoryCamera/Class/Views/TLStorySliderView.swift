@@ -9,11 +9,10 @@
 import UIKit
 
 protocol TLSliderDelegate: NSObjectProtocol {
-    func sliderSliding(ratio:CGFloat)
+    func sliderDragging(ratio:CGFloat)
 }
 
 class TLStorySliderView: UIView {
-    
     fileprivate var blockView:UIView = {
         let view = UIView.init()
         view.layer.cornerRadius = 15
@@ -71,20 +70,20 @@ class TLStorySliderView: UIView {
     
     func updateRatio(centerY:CGFloat) {
         self.ratio = (self.height - centerY) / (self.height)
-        self.delegate?.sliderSliding(ratio: self.ratio)
+        self.delegate?.sliderDragging(ratio: self.ratio)
     }
     
     func setDefaultValue(type:TLStoryDeployType) {
         if type == .text {
             let ratio = (TLStoryConfiguration.defaultTextWeight - TLStoryConfiguration.minTextWeight) / (TLStoryConfiguration.maxTextWeight - TLStoryConfiguration.minTextWeight)
             self.blockView.centerY = (self.height - 30) * (1 - ratio)
-            self.delegate?.sliderSliding(ratio: self.ratio)
+            self.delegate?.sliderDragging(ratio: self.ratio)
         }
         
         if type == .draw {
             let ratio = (TLStoryConfiguration.defaultDrawLineWeight - TLStoryConfiguration.minDrawLineWeight) / (TLStoryConfiguration.maxDrawLineWeight - TLStoryConfiguration.minDrawLineWeight)
             self.blockView.centerY = (self.height - 30) * (1 - ratio)
-            self.delegate?.sliderSliding(ratio: self.ratio)
+            self.delegate?.sliderDragging(ratio: self.ratio)
         }
     }
     
