@@ -181,6 +181,7 @@ class TLStoryTextEditerView: UIView {
     
     func setTextSize(size:CGFloat) {
         self.inputTextView.font = UIFont.boldSystemFont(ofSize: size)
+        self.inputTextView.height = size + 20
     }
     
     func setTextAlignment() -> NSTextAlignment {
