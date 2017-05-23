@@ -12,6 +12,8 @@
 		4B6443391ED0960900D6AEB6 /* WBStoryStickers.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4B6443381ED0960900D6AEB6 /* WBStoryStickers.plist */; };
 		4B8682821ECB475E00C6BB53 /* TLStoryDrawView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B8682811ECB475E00C6BB53 /* TLStoryDrawView.swift */; };
 		4B8682871ECB4ECE00C6BB53 /* TLColorPaletteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B8682861ECB4ECE00C6BB53 /* TLColorPaletteView.swift */; };
+		4BB1A66B1ED3DF7400B1397A /* TLPhotoLibraryPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BB1A66A1ED3DF7400B1397A /* TLPhotoLibraryPickerView.swift */; };
+		4BB1A66D1ED3E48000B1397A /* WBStoryTextColor.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4BB1A66C1ED3E48000B1397A /* WBStoryTextColor.plist */; };
 		4BC059D21ECDD1BF00D68800 /* TLStickerTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BC059D11ECDD1BF00D68800 /* TLStickerTextView.swift */; };
 		C61582B01EC021C2003C82AC /* UIView+TLStory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61582AF1EC021C2003C82AC /* UIView+TLStory.swift */; };
 		C63FA4D21EC07A41003690DB /* TLStoryConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63FA4D11EC07A41003690DB /* TLStoryConfiguration.swift */; };
@@ -23,7 +25,6 @@
 		C65241A21ECAF7D800A78E3D /* TLStickerStageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65241A11ECAF7D800A78E3D /* TLStickerStageView.swift */; };
 		C65241A41ECAF99A00A78E3D /* TLStickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65241A31ECAF99A00A78E3D /* TLStickerView.swift */; };
 		C657F0591EC94D5000246393 /* TLStickerPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C657F0581EC94D5000246393 /* TLStickerPickerView.swift */; };
-		C657F05B1EC9550E00246393 /* TLStickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C657F05A1EC9550E00246393 /* TLStickerCell.swift */; };
 		C657F05E1EC955A500246393 /* WBStoryStickers.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C657F05D1EC955A500246393 /* WBStoryStickers.bundle */; };
 		C657F0601EC959FF00246393 /* UIImage+TLStory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C657F05F1EC959FF00246393 /* UIImage+TLStory.swift */; };
 		C690DB431EC0213F00320D90 /* UIColor+TLStory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C690DB421EC0213F00320D90 /* UIColor+TLStory.swift */; };
@@ -41,6 +42,8 @@
 		4B6443381ED0960900D6AEB6 /* WBStoryStickers.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = WBStoryStickers.plist; sourceTree = "<group>"; };
 		4B8682811ECB475E00C6BB53 /* TLStoryDrawView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLStoryDrawView.swift; sourceTree = "<group>"; };
 		4B8682861ECB4ECE00C6BB53 /* TLColorPaletteView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLColorPaletteView.swift; sourceTree = "<group>"; };
+		4BB1A66A1ED3DF7400B1397A /* TLPhotoLibraryPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLPhotoLibraryPickerView.swift; sourceTree = "<group>"; };
+		4BB1A66C1ED3E48000B1397A /* WBStoryTextColor.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = WBStoryTextColor.plist; sourceTree = "<group>"; };
 		4BC059D11ECDD1BF00D68800 /* TLStickerTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLStickerTextView.swift; sourceTree = "<group>"; };
 		ABCCF2CB56002C86AF5BAED1 /* Pods-TLStoryCamera.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TLStoryCamera.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TLStoryCamera/Pods-TLStoryCamera.debug.xcconfig"; sourceTree = "<group>"; };
 		BD9422C59A5198DD0D677E8D /* Pods_TLStoryCamera.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TLStoryCamera.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -56,7 +59,6 @@
 		C65241A11ECAF7D800A78E3D /* TLStickerStageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLStickerStageView.swift; sourceTree = "<group>"; };
 		C65241A31ECAF99A00A78E3D /* TLStickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLStickerView.swift; sourceTree = "<group>"; };
 		C657F0581EC94D5000246393 /* TLStickerPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLStickerPickerView.swift; sourceTree = "<group>"; };
-		C657F05A1EC9550E00246393 /* TLStickerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLStickerCell.swift; sourceTree = "<group>"; };
 		C657F05D1EC955A500246393 /* WBStoryStickers.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = WBStoryStickers.bundle; sourceTree = "<group>"; };
 		C657F05F1EC959FF00246393 /* UIImage+TLStory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+TLStory.swift"; sourceTree = "<group>"; };
 		C690DB421EC0213F00320D90 /* UIColor+TLStory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+TLStory.swift"; sourceTree = "<group>"; };
@@ -167,7 +169,6 @@
 				C6A77E221EC2D704008BC6BD /* TLStoryPlayerView.swift */,
 				C6A77E241EC2D712008BC6BD /* TLStoryPhotoView.swift */,
 				C657F0581EC94D5000246393 /* TLStickerPickerView.swift */,
-				C657F05A1EC9550E00246393 /* TLStickerCell.swift */,
 				C65241A11ECAF7D800A78E3D /* TLStickerStageView.swift */,
 				C65241A31ECAF99A00A78E3D /* TLStickerView.swift */,
 				4BC059D11ECDD1BF00D68800 /* TLStickerTextView.swift */,
@@ -175,6 +176,7 @@
 				4B8682861ECB4ECE00C6BB53 /* TLColorPaletteView.swift */,
 				C6F705291ECD732A0069C1FF /* TLStorySliderView.swift */,
 				4B3647C01ED017F3002B17FC /* TLStoryTextEditerView.swift */,
+				4BB1A66A1ED3DF7400B1397A /* TLPhotoLibraryPickerView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -182,6 +184,7 @@
 		C657F05C1EC955A500246393 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				4BB1A66C1ED3E48000B1397A /* WBStoryTextColor.plist */,
 				4B6443381ED0960900D6AEB6 /* WBStoryStickers.plist */,
 				C657F05D1EC955A500246393 /* WBStoryStickers.bundle */,
 			);
@@ -243,7 +246,7 @@
 				TargetAttributes = {
 					C64E774B1EC00D9C005B09B6 = {
 						CreatedOnToolsVersion = 8.3.2;
-						DevelopmentTeam = HLFH2Z48FU;
+						DevelopmentTeam = 6ZLY37X4F2;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -272,6 +275,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C64E775A1EC00D9C005B09B6 /* LaunchScreen.storyboard in Resources */,
+				4BB1A66D1ED3E48000B1397A /* WBStoryTextColor.plist in Resources */,
 				4B6443391ED0960900D6AEB6 /* WBStoryStickers.plist in Resources */,
 				C64E77571EC00D9C005B09B6 /* Assets.xcassets in Resources */,
 				C657F05E1EC955A500246393 /* WBStoryStickers.bundle in Resources */,
@@ -334,6 +338,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C69A2D851EC05AA10028244D /* GPUImageBeautifyFilter.m in Sources */,
+				4BB1A66B1ED3DF7400B1397A /* TLPhotoLibraryPickerView.swift in Sources */,
 				C6A77E251EC2D712008BC6BD /* TLStoryPhotoView.swift in Sources */,
 				4B8682871ECB4ECE00C6BB53 /* TLColorPaletteView.swift in Sources */,
 				4B8682821ECB475E00C6BB53 /* TLStoryDrawView.swift in Sources */,
@@ -353,7 +358,6 @@
 				4B3647C11ED017F3002B17FC /* TLStoryTextEditerView.swift in Sources */,
 				C65241A21ECAF7D800A78E3D /* TLStickerStageView.swift in Sources */,
 				C65241A41ECAF99A00A78E3D /* TLStickerView.swift in Sources */,
-				C657F05B1EC9550E00246393 /* TLStickerCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -469,7 +473,7 @@
 			baseConfigurationReference = ABCCF2CB56002C86AF5BAED1 /* Pods-TLStoryCamera.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = HLFH2Z48FU;
+				DEVELOPMENT_TEAM = 6ZLY37X4F2;
 				INFOPLIST_FILE = TLStoryCamera/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.garry.TLStoryCamera;
@@ -484,7 +488,7 @@
 			baseConfigurationReference = 325AFAF6849D5513C06F53DD /* Pods-TLStoryCamera.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = HLFH2Z48FU;
+				DEVELOPMENT_TEAM = 6ZLY37X4F2;
 				INFOPLIST_FILE = TLStoryCamera/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.garry.TLStoryCamera;

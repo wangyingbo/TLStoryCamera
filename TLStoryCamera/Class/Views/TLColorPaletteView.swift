@@ -37,42 +37,19 @@ class TLColorPaletteView: UIView {
     }()
     
     fileprivate var collectionView:UICollectionView?
-        
-    fileprivate var colors:[[UIColor]] = [
-        [
-            UIColor.init(colorHex: 0xffffff, alpha: 1),
-            UIColor.init(colorHex: 0x000000, alpha: 1),
-            UIColor.init(colorHex: 0x3e9aec, alpha: 1),
-            UIColor.init(colorHex: 0x73bf56, alpha: 1),
-            UIColor.init(colorHex: 0xfbcb64, alpha: 1),
-            UIColor.init(colorHex: 0xfc8f3b, alpha: 1),
-            UIColor.init(colorHex: 0xe64e55, alpha: 1),
-            UIColor.init(colorHex: 0xa11db9, alpha: 1),
-            UIColor.init(colorHex: 0xeb4b59, alpha: 1)
-        ],
-        [
-            UIColor.init(colorHex: 0xe50f22, alpha: 1),
-            UIColor.init(colorHex: 0xeb878d, alpha: 1),
-            UIColor.init(colorHex: 0xfdd3d4, alpha: 1),
-            UIColor.init(colorHex: 0xfedcb6, alpha: 1),
-            UIColor.init(colorHex: 0xfec386, alpha: 1),
-            UIColor.init(colorHex: 0xd1904d, alpha: 1),
-            UIColor.init(colorHex: 0x97653d, alpha: 1),
-            UIColor.init(colorHex: 0x3f2621, alpha: 1),
-            UIColor.init(colorHex: 0x1e4a2a, alpha: 1),
-            ],
-        [
-            UIColor.init(colorHex: 0x262626, alpha: 1),
-            UIColor.init(colorHex: 0x363636, alpha: 1),
-            UIColor.init(colorHex: 0x555555, alpha: 1),
-            UIColor.init(colorHex: 0x737373, alpha: 1),
-            UIColor.init(colorHex: 0x999999, alpha: 1),
-            UIColor.init(colorHex: 0xb2b2b2, alpha: 1),
-            UIColor.init(colorHex: 0xc7c7c7, alpha: 1),
-            UIColor.init(colorHex: 0xdbdbdb, alpha: 1),
-            UIColor.init(colorHex: 0xefefef, alpha: 1)
-        ]
-    ]
+    
+    fileprivate var colors:[UIColor] = {
+        var array = [UIColor]()
+        let plist = Bundle.main.path(forResource: "WBStoryTextColor", ofType: "plist")
+        if let p = plist, let colors = NSArray.init(contentsOfFile: p) as? [[String:String]] {
+            for colorDic in colors {
+                if var c = colorDic["background"], let color = UIColor.color(hexString: c) {
+                    array.append(color)
+                }
+            }
+        }
+        return array
+    }()
     
     public weak var delegate:TLColorPaletteViewDelegate?
     
@@ -83,7 +60,7 @@ class TLColorPaletteView: UIView {
         layout.itemSize = CGSize.init(width: (self.width - 40) / 9, height: 30)
         layout.minimumLineSpacing = 0.01
         layout.scrollDirection = .horizontal
-
+        
         collectionView = UICollectionView.init(frame: CGRect.init(x: 40, y: 15, width: self.width - 40, height: 30), collectionViewLayout: layout)
         collectionView!.backgroundColor = UIColor.clear
         collectionView!.delegate = self
@@ -107,18 +84,13 @@ class TLColorPaletteView: UIView {
     }
     
     func setDefault(color:UIColor?) {
-        if let c = color {
-            for (i,array) in colors.enumerated() {
-                if let _ = array.index(of: c) {
-                    collectionView?.scrollToItem(at: IndexPath.init(row: 0, section: i), at: .left, animated: false)
-                    sliderBtn.backgroundColor = c
-                    break
-                }
-            }
+        if let c = color, let index = colors.index(of: c) {
+            collectionView?.scrollToItem(at: IndexPath.init(row: index, section: 0), at: .left, animated: false)
+            sliderBtn.backgroundColor = c
         }else {
             collectionView?.scrollToItem(at: IndexPath.init(row: 0, section: 0), at: .left, animated: false)
             sliderBtn.backgroundColor = UIColor.white
-        }        
+        }
     }
     
     func sliderAction(sender:UITapGestureRecognizer) {
@@ -134,19 +106,16 @@ class TLColorPaletteView: UIView {
 
 extension TLColorPaletteView: UICollectionViewDelegate, UICollectionViewDataSource, UIScrollViewDelegate, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return colors[section].count
-    }
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
         return colors.count
     }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! TLColorPaletteCell
-        cell.color = colors[indexPath.section][indexPath.row]
+        cell.color = colors[indexPath.row]
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let color = colors[indexPath.section][indexPath.row]
+        let color = colors[indexPath.row]
         self.sliderBtn.backgroundColor = color
         self.delegate?.colorPaletteDidSelected(color: color)
     }

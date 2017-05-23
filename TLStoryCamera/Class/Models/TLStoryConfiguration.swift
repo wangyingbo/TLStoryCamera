@@ -19,7 +19,7 @@ class TLStoryConfiguration: NSObject {
     public static let minRecordingTime:TimeInterval = 30
     
     //最大镜头焦距
-    public static var maxVideoZoomFactor:CGFloat = 20
+    public static let maxVideoZoomFactor:CGFloat = 20
     
     //视频输入
     public static let videoSetting:[String : Any] = [
