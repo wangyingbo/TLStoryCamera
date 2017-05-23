@@ -9,9 +9,11 @@
 import UIKit
 import GPUImage
 import Photos
+import SVProgressHUD
 
 class TLStoryPhotoView: TLStoryPreviewView {
     fileprivate var imgView = UIImageView.init()
+    fileprivate var sourceImg:UIImage?
     
     init(frame: CGRect, url:URL) {
         super.init(frame: frame)
@@ -20,8 +22,19 @@ class TLStoryPhotoView: TLStoryPreviewView {
         imgView.frame = self.bounds
         
         if let d = try? Data.init(contentsOf: url) {
-            imgView.image = UIImage.init(data: d)
+            sourceImg = UIImage.init(data: d)
+            imgView.image = sourceImg
         }
+    }
+    
+    init(frame: CGRect, imgData:Data) {
+        super.init(frame: frame)
+
+        self.insertSubview(imgView, at: 0)
+        imgView.frame = self.bounds
+        
+        sourceImg = UIImage.init(data: imgData)
+        imgView.image = sourceImg
     }
     
     override func saveAction() {
@@ -53,7 +66,7 @@ class TLStoryPhotoView: TLStoryPreviewView {
             return
         }
 
-        let resultImg = self.imgView.image?.imageMontage(img: img)
+        let resultImg = sourceImg?.imageMontage(img: img)
         let imgData = UIImagePNGRepresentation(resultImg!)
         
         let filePath = TLStoryConfiguration.photoPath?.appending("/\(Int(Date().timeIntervalSince1970))_temp.png")
@@ -65,8 +78,11 @@ class TLStoryPhotoView: TLStoryPreviewView {
                 PHPhotoLibrary.shared().performChanges({
                     PHAssetChangeRequest.creationRequestForAssetFromImage(atFileURL: u)
                 }, completionHandler: { (x, e) in
-                    self.closeAction()
-                    self.delegate?.storyPreviewClose()
+                    DispatchQueue.main.async {
+                        SVProgressHUD.showSuccess(withStatus: "已保存到相册")
+                        self.closeAction()
+                        self.delegate?.storyPreviewClose()
+                    }
                 })
             } catch {
                 

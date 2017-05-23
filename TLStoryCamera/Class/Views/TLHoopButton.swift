@@ -15,14 +15,14 @@ enum StoryType {
     case photo
 }
 
-protocol TLHoopButtonProtocol : NSObjectProtocol {
+protocol TLHoopButtonDelegate : NSObjectProtocol {
     func hoopStart(hoopButton:TLHoopButton) -> Void
     func hoopComplete(hoopButton:TLHoopButton, type:StoryType) -> Void
     func hoopDrag(hoopButton:TLHoopButton,offsetY:CGFloat) -> Void
 }
 
 class TLHoopButton: UIControl {
-    public weak var delegete : TLHoopButtonProtocol?
+    public weak var delegete : TLHoopButtonDelegate?
     
     var centerPoint:CGPoint {
         return CGPoint.init(x: self.frame.width / 2.0, y: self.frame.width / 2.0)

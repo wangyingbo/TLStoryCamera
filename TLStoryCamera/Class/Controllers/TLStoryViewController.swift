@@ -121,16 +121,32 @@ public class TLStoryViewController: UIViewController {
         guard let u = url else {
             return
         }
-        
         if type == .photo {
-            let photoView = TLStoryPhotoView.init(frame: view.bounds, url: u)
-            photoView.delegate = self
-            self.view.addSubview(photoView)
+            self.showPhotoPreview(url: u)
         }else {
-            let videoView = TLStoryPlayerView.init(frame: view.bounds, url: u)
-            videoView.delegate = self
-            self.view.addSubview(videoView)
+            self.showVideoPreview(url: u)
         }
+    }
+    
+    func showPhotoPreview(url:URL) {
+        let photoView = TLStoryPhotoView.init(frame: view.bounds, url: url)
+        photoView.delegate = self
+        self.view.addSubview(photoView)
+        self.cameraView?.pauseCamera()
+    }
+    
+    func showPhotoPreview(imgData:Data) {
+        let photoView = TLStoryPhotoView.init(frame: view.bounds, imgData: imgData)
+        photoView.delegate = self
+        self.view.addSubview(photoView)
+        self.cameraView?.pauseCamera()
+    }
+    
+    func showVideoPreview(url:URL) {
+        let videoView = TLStoryPlayerView.init(frame: view.bounds, url: url)
+        videoView.delegate = self
+        self.view.addSubview(videoView)
+        self.cameraView?.pauseCamera()
     }
     
     override public var prefersStatusBarHidden: Bool {
@@ -138,7 +154,7 @@ public class TLStoryViewController: UIViewController {
     }
 }
 
-extension TLStoryViewController : TLHoopButtonProtocol {
+extension TLStoryViewController : TLHoopButtonDelegate {
     func hoopStart(hoopButton: TLHoopButton) {
         cameraView?.initRecording()
         cameraView?.startRecording()
@@ -181,9 +197,16 @@ extension TLStoryViewController : TLStoryPreviewDelegate {
 }
 
 extension TLStoryViewController: TLPhotoLibraryPickerViewDelegate {
-    func photoLibraryPickerDidSelectPhoto(url: URL, type: StoryType) {
+    func photoLibraryPickerDidSelectPhoto(imgData: Data) {
+        self.photoLibraryPicker(hidden: true)
+        self.showPhotoPreview(imgData: imgData)
+        self.view.removeGestureRecognizer(self.swipeUp!)
+    }
+
+    func photoLibraryPickerDidSelectVideo(url: URL) {
         self.photoLibraryPicker(hidden: true)
         self.showPreview(type: .video, url: url)
+        self.view.removeGestureRecognizer(self.swipeUp!)
     }
 }
 

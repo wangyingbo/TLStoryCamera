@@ -10,7 +10,8 @@ import UIKit
 import Photos
 
 protocol TLPhotoLibraryPickerViewDelegate: NSObjectProtocol {
-    func photoLibraryPickerDidSelectPhoto(url:URL, type:StoryType)
+    func photoLibraryPickerDidSelectVideo(url:URL)
+    func photoLibraryPickerDidSelectPhoto(imgData:Data)
 }
 
 class TLPhotoLibraryPickerView: UIView {
@@ -99,15 +100,16 @@ extension TLPhotoLibraryPickerView: UICollectionViewDelegate, UICollectionViewDa
             PHImageManager.default().requestAVAsset(forVideo: asset, options: nil) { (ass, mix, map) in
                 let url = (ass as! AVURLAsset).url
                 DispatchQueue.main.async {
-                    self.delegate?.photoLibraryPickerDidSelectPhoto(url: url, type: .video)
+                    self.delegate?.photoLibraryPickerDidSelectVideo(url: url)
                 }
             }
         }
         
         if asset.mediaType == .image {
             PHImageManager.default().requestImageData(for: asset, options: nil, resultHandler: { (result, string, orientation, info) -> Void in
-                let img = UIImage.init(data: result!)
-                
+                if let r = result {
+                    self.delegate?.photoLibraryPickerDidSelectPhoto(imgData: r)
+                }
             })
         }
     }

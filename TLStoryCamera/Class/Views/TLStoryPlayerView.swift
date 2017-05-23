@@ -9,6 +9,7 @@
 import UIKit
 import GPUImage
 import Photos
+import SVProgressHUD
 
 class TLStoryPlayerView: TLStoryPreviewView {
     fileprivate var isWriting: Bool = false
@@ -67,6 +68,24 @@ class TLStoryPlayerView: TLStoryPreviewView {
         self.handleVideo()
     }
     
+    fileprivate func getVideoSize(asset:AVAsset) -> CGSize {
+        for track in asset.tracks {
+            if track.mediaType == AVMediaTypeVideo {
+                return track.naturalSize
+            }
+        }
+        return TLStoryConfiguration.outputVideoSize
+    }
+    
+    fileprivate func getVideoRotation(asset:AVAsset) -> CGAffineTransform? {
+        for track in asset.tracks {
+            if track.mediaType == AVMediaTypeVideo {
+                return track.preferredTransform
+            }
+        }
+        return nil
+    }
+    
     func handleVideo() {
         guard let u = url else {
             return
@@ -81,8 +100,12 @@ class TLStoryPlayerView: TLStoryPreviewView {
         movieFile?.playAtActualSpeed = true
         
         let filePath = TLStoryConfiguration.videoPath?.appending("/\(Int(Date().timeIntervalSince1970))_temp.mp4")
+        let size = self.getVideoSize(asset: asset)
         
-        movieWriter = GPUImageMovieWriter.init(movieURL: URL.init(fileURLWithPath: filePath!), size: TLStoryConfiguration.outputVideoSize)
+        movieWriter = GPUImageMovieWriter.init(movieURL: URL.init(fileURLWithPath: filePath!), size: size)
+        if let t = self.getVideoRotation(asset: asset) {
+            movieWriter?.transform = t
+        }
         movieWriter?.shouldPassthroughAudio = !self.audioEnableBtn.isSelected
         movieFile?.audioEncodingTarget = movieWriter
         movieFile?.enableSynchronizedEncoding(using: movieWriter)
@@ -107,8 +130,10 @@ class TLStoryPlayerView: TLStoryPreviewView {
         movieWriter?.startRecording()
         movieFile?.startProcessing()
         
+        SVProgressHUD.show()
         isWriting = true
         self.movieWriter?.completionBlock = { [weak self] in
+            SVProgressHUD.dismiss()
             guard let strongSelf = self else {
                 return
             }
@@ -123,8 +148,11 @@ class TLStoryPlayerView: TLStoryPreviewView {
             PHPhotoLibrary.shared().performChanges({
                 PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: url)
             }, completionHandler: { (x, e) in
-                self?.closeAction()
-                self?.delegate?.storyPreviewClose()
+                DispatchQueue.main.async {
+                    SVProgressHUD.showSuccess(withStatus: "已保存到相册")
+                    self?.closeAction()
+                    self?.delegate?.storyPreviewClose()
+                }
             })
         }
     }

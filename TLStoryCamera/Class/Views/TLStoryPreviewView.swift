@@ -127,9 +127,7 @@ class TLStoryPreviewView: UIView {
     }
     
     public func closeAction() {
-        if let delegate = self.delegate {
-            delegate.storyPreviewClose()
-        }
+        delegate?.storyPreviewClose()
         self.removeFromSuperview()
     }
     

@@ -93,6 +93,11 @@ class TLCameraView: GPUImageView {
         videoCamera?.rotateCamera()
     }
     
+    public func pauseCamera() {
+        self.beautifyFilter.removeTarget(self.movieWriter!)
+        self.videoCamera?.pauseCapture()
+    }
+    
     public func resumeCamera() {
         if let vPath = currentVideoPath {
             do {
@@ -111,6 +116,7 @@ class TLCameraView: GPUImageView {
             }
         }
         
+        self.beautifyFilter.addTarget(self.movieWriter!)
         videoCamera?.resumeCameraCapture()
         self.setVideoZoomFactor(zoom: 0)
     }
@@ -132,8 +138,6 @@ class TLCameraView: GPUImageView {
             guard let strongSelf = self else {
                 return
             }
-            strongSelf.beautifyFilter.removeTarget(self?.movieWriter!)
-            strongSelf.videoCamera?.pauseCapture()
             guard let img = image else {
                 complete(nil)
                 return

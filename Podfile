@@ -4,4 +4,5 @@ use_frameworks!
 
 target 'TLStoryCamera' do
     pod 'GPUImage'
+    pod 'SVProgressHUD'
 end
