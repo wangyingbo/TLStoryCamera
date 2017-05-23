@@ -8,7 +8,7 @@
 
 
 ##介绍
->仿照instagramStory & WeiboStory。可以在拍摄视频后贴图，贴字，涂鸦。
+>仿照instagramStory & WeiBoStory。可以在拍摄视频后贴图，贴字，涂鸦。
 
 ##特性
 >1·基本实现WeiboStory的大部分功能
@@ -25,11 +25,15 @@
 >
 
 ##使用说明
->克隆项目后，需要使用Cocoapods updte/install
->
->部分图片素材来源于Weibo，如需将TLStoryCamera用于实际项目，请替换资源图片
+>克隆项目后，需要使用Cocoapods Install
 >
 >目前项目尚处于开发阶段，不建议直接在企业项目中使用。
+>
+
+##注意！
+>
+>项目部分图片素材来自WeiBo，请替换后使用！
+>
 
 ##截图
 
