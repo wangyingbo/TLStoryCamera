@@ -54,6 +54,10 @@ class TLCameraView: GPUImageView {
         let max = maxZoomFactor > TLStoryConfiguration.maxVideoZoomFactor ? TLStoryConfiguration.maxVideoZoomFactor : maxZoomFactor
         let per = MaxDragOffset / max
         let zoom = offseY / per
+        self.setVideoZoomFactor(zoom: zoom)
+    }
+    
+    fileprivate func setVideoZoomFactor(zoom:CGFloat) {
         do {
             try videoCamera?.inputCamera.lockForConfiguration()
             videoCamera?.inputCamera.videoZoomFactor = zoom + 1.0
@@ -108,6 +112,7 @@ class TLCameraView: GPUImageView {
         }
         
         videoCamera?.resumeCameraCapture()
+        self.setVideoZoomFactor(zoom: 0)
     }
     
     public func finishRecording(complete:@escaping ((URL) -> Void)) {

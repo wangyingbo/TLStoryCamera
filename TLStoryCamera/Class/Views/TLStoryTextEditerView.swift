@@ -244,7 +244,6 @@ class TLStoryTextInputToolsBar: UIView {
     fileprivate var textAlignmentBtn:UIButton = {
         let btn = UIButton.init(type: UIButtonType.custom)
         btn.setImage(#imageLiteral(resourceName: "story_publish_icon_align_center"), for: .normal)
-        btn.addTarget(self, action: #selector(textAlignmentAction), for: .touchUpInside)
         return btn
     }()
     
@@ -252,7 +251,6 @@ class TLStoryTextInputToolsBar: UIView {
         let btn = UIButton.init(type: UIButtonType.custom)
         btn.setTitle("确定", for: .normal)
         btn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
-        btn.addTarget(self, action: #selector(confrimAction), for: .touchUpInside)
         return btn
     }()
     
@@ -269,21 +267,17 @@ class TLStoryTextInputToolsBar: UIView {
         confrimBtn.bounds = CGRect.init(x: 0, y: 0, width: 55, height: 55)
         confrimBtn.center = CGPoint.init(x: self.width - confrimBtn.width / 2, y:confrimBtn.height / 2)
         
-        let textAlignmentTap = UITapGestureRecognizer.init(target: self, action: #selector(textAlignmentAction))
-        textAlignmentBtn.addGestureRecognizer(textAlignmentTap)
-        
-        let confrimTap = UITapGestureRecognizer.init(target: self, action: #selector(confrimAction))
-        confrimBtn.addGestureRecognizer(confrimTap)
+        textAlignmentBtn.addTarget(self, action: #selector(textAlignmentAction), for: .touchUpInside)
+        confrimBtn.addTarget(self, action: #selector(confrimAction), for: .touchUpInside)
     }
     
-    public func textAlignmentAction(sender:UITapGestureRecognizer) {
-        let v = sender.view as! UIButton
+    public func textAlignmentAction(sender:UIButton) {
         let imgs = [NSTextAlignment.left:#imageLiteral(resourceName: "story_publish_icon_align_left"),
                     NSTextAlignment.center:#imageLiteral(resourceName: "story_publish_icon_align_center"),
                     NSTextAlignment.right:#imageLiteral(resourceName: "story_publish_icon_align_right")]
         let textAlignment = self.delegate?.textInputToolsBarChange()
         print(textAlignment!)
-        v.setImage(imgs[textAlignment!], for: .normal)
+        sender.setImage(imgs[textAlignment!], for: .normal)
     }
     
     public func confrimAction() {

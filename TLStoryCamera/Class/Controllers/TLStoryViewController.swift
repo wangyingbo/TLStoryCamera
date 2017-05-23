@@ -25,14 +25,29 @@ public class TLStoryViewController: UIViewController {
         return btn
     }()
     
+    fileprivate var photoLibraryHintView:TLPhotoLibraryHintView?
+    
+    fileprivate var photoLibraryPicker:TLPhotoLibraryPickerView?
+    
+    fileprivate var swipeUp:UISwipeGestureRecognizer?
+    
+    fileprivate var swipeDown:UISwipeGestureRecognizer?
+    
+    fileprivate var coverBlurView = UIVisualEffectView.init(effect: UIBlurEffect.init(style: .light))
+    
+    public override func loadView() {
+        self.view = TLStoryBgView.init(frame: UIScreen.main.bounds)
+    }
+    
     override public func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
+        self.view.isUserInteractionEnabled = true
         
         cameraView = TLCameraView.init(frame: self.view.bounds)
         view.addSubview(cameraView!)
-        cameraView?.initRecording()
-        cameraView?.startCapture()
+        cameraView!.initRecording()
+        cameraView!.startCapture()
         
         startBtn.center = CGPoint.init(x: view.center.x, y: view.bounds.height - 52 - 40)
         startBtn.delegete = self
@@ -45,9 +60,30 @@ public class TLStoryViewController: UIViewController {
         switchBtn.sizeToFit()
         switchBtn.center = CGPoint.init(x: startBtn.centerX + 100, y: startBtn.centerY)
         view.addSubview(switchBtn)
+        
+        photoLibraryHintView = TLPhotoLibraryHintView.init(frame: CGRect.init(x: 0, y: 0, width: 200, height: 50))
+        photoLibraryHintView?.center = CGPoint.init(x: self.view.width / 2, y: self.view.height - 25)
+        view.addSubview(photoLibraryHintView!)
+        
+        photoLibraryPicker = TLPhotoLibraryPickerView.init(frame: CGRect.init(x: 0, y: self.view.height, width: self.view.width, height: 165))
+        photoLibraryPicker?.delegate = self
+        view.addSubview(photoLibraryPicker!)
+        
+        self.view.addSubview(coverBlurView)
+        coverBlurView.frame = self.view.bounds
+        coverBlurView.isHidden = true
+        coverBlurView.isUserInteractionEnabled = true
+        
+        swipeUp = UISwipeGestureRecognizer.init(target: self, action: #selector(swipeAction))
+        swipeUp?.direction = .up
+        self.view.addGestureRecognizer(swipeUp!)
+        
+        swipeDown = UISwipeGestureRecognizer.init(target: self, action: #selector(swipeAction))
+        swipeDown!.direction = .down
+        coverBlurView.addGestureRecognizer(swipeDown!)
     }
     
-   @objc fileprivate func flashAction(sender: UIButton) {
+    @objc fileprivate func flashAction(sender: UIButton) {
         let mode = self.cameraView!.flashStatusChange()
         let imgs = [AVCaptureTorchMode.on:#imageLiteral(resourceName: "story_publish_icon_flashlight_on"),
                     AVCaptureTorchMode.off:#imageLiteral(resourceName: "story_publish_icon_flashlight_off"),
@@ -57,6 +93,28 @@ public class TLStoryViewController: UIViewController {
     
     func switchAction(sender: UIButton) {
         cameraView?.rotateCamera()
+    }
+    
+    func swipeAction(sender:UISwipeGestureRecognizer) {
+        self.photoLibraryPicker(hidden: sender.direction == .down)
+    }
+    
+    func photoLibraryPicker(hidden:Bool) {
+        if hidden {
+            UIView.animate(withDuration: 0.25, animations: {
+                self.coverBlurView.alpha = 0
+                self.view.y = 0
+            }, completion: { (x) in
+                self.coverBlurView.isHidden = true
+            })
+        }else {
+            coverBlurView.isHidden = false
+            coverBlurView.alpha = 0
+            UIView.animate(withDuration: 0.25, animations: {
+                self.coverBlurView.alpha = 1
+                self.view.y = -165
+            })
+        }
     }
     
     func showPreview(type:StoryType, url:URL?) -> Void {
@@ -74,6 +132,7 @@ public class TLStoryViewController: UIViewController {
             self.view.addSubview(videoView)
         }
     }
+    
     override public var prefersStatusBarHidden: Bool {
         return true
     }
@@ -83,6 +142,8 @@ extension TLStoryViewController : TLHoopButtonProtocol {
     func hoopStart(hoopButton: TLHoopButton) {
         cameraView?.initRecording()
         cameraView?.startRecording()
+        photoLibraryHintView?.isHidden = true
+        self.view.removeGestureRecognizer(swipeUp!)
     }
     func hoopDrag(hoopButton: TLHoopButton, offsetY: CGFloat) {
         self.cameraView?.cameraZoom(offseY: offsetY)
@@ -98,7 +159,7 @@ extension TLStoryViewController : TLHoopButtonProtocol {
             })
         }
         
-        UIView.animate(withDuration: 0.25) { 
+        UIView.animate(withDuration: 0.25) {
             self.flashBtn.alpha = 0
             self.switchBtn.alpha = 0
         }
@@ -113,5 +174,24 @@ extension TLStoryViewController : TLStoryPreviewDelegate {
             self.flashBtn.alpha = 1
             self.switchBtn.alpha = 1
         }
+        
+        photoLibraryHintView?.isHidden = false
+        self.view.addGestureRecognizer(swipeUp!)
+    }
+}
+
+extension TLStoryViewController: TLPhotoLibraryPickerViewDelegate {
+    func photoLibraryPickerDidSelectPhoto(url: URL, type: StoryType) {
+        self.photoLibraryPicker(hidden: true)
+        self.showPreview(type: .video, url: url)
+    }
+}
+
+class TLStoryBgView: UIView {
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        if point.y < self.height + 165 {
+            return true
+        }
+        return super.point(inside: point, with: event)
     }
 }

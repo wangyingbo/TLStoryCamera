@@ -77,10 +77,8 @@ class TLColorPaletteView: UIView {
         
         sliderBtn.frame = CGRect.init(x: 0, y: 0, width: 30, height: 30)
         sliderBtn.center = CGPoint.init(x: 5 + sliderBtn.width / 2, y: self.height / 2)
+        sliderBtn.addTarget(self, action: #selector(sliderAction), for: .touchUpInside)
         self.addSubview(sliderBtn)
-        
-        let tap = UITapGestureRecognizer.init(target: self, action: #selector(sliderAction))
-        sliderBtn.addGestureRecognizer(tap)
     }
     
     func setDefault(color:UIColor?) {
@@ -93,10 +91,9 @@ class TLColorPaletteView: UIView {
         }
     }
     
-    func sliderAction(sender:UITapGestureRecognizer) {
-        let b = sender.view as! UIButton
-        b.isSelected = !b.isSelected
-        self.delegate?.colorPaletteSliderView(hidden: !b.isSelected)
+    func sliderAction(sender:UIButton) {
+        sender.isSelected = !sender.isSelected
+        self.delegate?.colorPaletteSliderView(hidden: !sender.isSelected)
     }
     
     required init?(coder aDecoder: NSCoder) {
