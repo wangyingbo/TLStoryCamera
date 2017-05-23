@@ -17,10 +17,12 @@ TLStoryCamera
 * 基本实现WeiboStory的大部分功能
 * 支持码率，美颜开关等多项配置
 * 支持长按录像&短按拍照
+* 支持相册选择图片&视频
 * 使用Swift 3开发
 
 # 依赖框架
 * GPUImage
+* SVProgressHUD
 
 # Usage
 * 克隆项目后，需要使用Cocoapods Install
