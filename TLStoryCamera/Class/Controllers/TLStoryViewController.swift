@@ -108,6 +108,7 @@ public class TLStoryViewController: UIViewController {
                 self.coverBlurView.isHidden = true
             })
         }else {
+            self.photoLibraryPicker?.loadPhotos()
             coverBlurView.isHidden = false
             coverBlurView.alpha = 0
             UIView.animate(withDuration: 0.25, animations: {

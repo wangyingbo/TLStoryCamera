@@ -112,6 +112,8 @@ extension TLColorPaletteView: UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let cell = collectionView.cellForItem(at: indexPath) as! TLColorPaletteCell
+        cell.selectedAnim()
         let color = colors[indexPath.row]
         self.sliderBtn.backgroundColor = color
         self.delegate?.colorPaletteDidSelected(color: color)
@@ -142,6 +144,16 @@ class TLColorPaletteCell: UICollectionViewCell {
         colorView.layer.borderColor = UIColor.white.cgColor
         colorView.layer.borderWidth = 2
         self.contentView.addSubview(colorView)
+    }
+    
+    public func selectedAnim() {
+        let zoomAnim = CABasicAnimation.init(keyPath: "transform.scale")
+        zoomAnim.fromValue = 1
+        zoomAnim.toValue = 1.2
+        zoomAnim.duration = 0.1
+        zoomAnim.autoreverses = true
+        zoomAnim.isRemovedOnCompletion = true
+        self.colorView.layer.add(zoomAnim, forKey: nil)
     }
     
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {

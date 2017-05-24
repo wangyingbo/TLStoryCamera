@@ -52,9 +52,11 @@ class TLPhotoLibraryPickerView: UIView {
         self.loadPhotos()
     }
     
-    func loadPhotos() {
+    public func loadPhotos() {
+        self.imgs.removeAll()
+        
         let options = PHFetchOptions()
-        options.sortDescriptors = [NSSortDescriptor.init(key: "creationDate", ascending: true)]
+        options.sortDescriptors = [NSSortDescriptor.init(key: "creationDate", ascending: false)]
         let results = PHAsset.fetchAssets(with: options)
         let dayLate = NSDate().timeIntervalSince1970 - 24 * 60 * 60
         
@@ -117,11 +119,18 @@ extension TLPhotoLibraryPickerView: UICollectionViewDelegate, UICollectionViewDa
 
 
 class TLPhotoLibraryPickerCell: UICollectionViewCell {
-    public var thumImgview:UIImageView = {
+    fileprivate lazy var thumImgview:UIImageView = {
         let imgView = UIImageView.init()
         imgView.contentMode = .scaleAspectFill
         imgView.clipsToBounds = true
         return imgView
+    }()
+    
+    fileprivate lazy var durationLabel:UILabel = {
+        let label = UILabel.init()
+        label.textColor = UIColor.white
+        label.font = UIFont.systemFont(ofSize: 12)
+        return label
     }()
     
     public var asset:PHAsset?
@@ -131,6 +140,8 @@ class TLPhotoLibraryPickerCell: UICollectionViewCell {
         
         self.contentView.addSubview(thumImgview)
         thumImgview.frame = self.bounds
+        
+        self.contentView.addSubview(durationLabel)
     }
     
     func set(asset:PHAsset) {
@@ -139,6 +150,20 @@ class TLPhotoLibraryPickerCell: UICollectionViewCell {
         PHCachingImageManager.default().requestImage(for: asset, targetSize: self.size, contentMode: PHImageContentMode.aspectFill, options: nil) { (image, nfo) in
             self.thumImgview.image = image
         }
+        
+        durationLabel.isHidden = asset.mediaType != .video
+        let time = Int(asset.duration)
+        let h = time / 3600
+        let min = Int((time - h * 3600) / 60)
+        let s = Int((time - h * 3600) % 60)
+        let hourStr = h <= 0 ? "" : h < 10 ? "0\(h):" : "\(h):"
+        let minStr = min <= 0 ? "0:" : min < 10 ? "0\(min):" : "\(min):"
+        let sStr = s <= 0 ? "" : s < 10 ? "0\(s)" : "\(s)"
+        
+        durationLabel.text = hourStr + minStr + sStr
+        durationLabel.sizeToFit()
+        durationLabel.center = CGPoint.init(x: self.width - durationLabel.width / 2 - 5, y: self.height - durationLabel.height / 2 - 5)
+        
     }
     
     required init?(coder aDecoder: NSCoder) {
