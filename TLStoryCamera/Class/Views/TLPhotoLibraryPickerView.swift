@@ -117,7 +117,12 @@ extension TLPhotoLibraryPickerView: UICollectionViewDelegate, UICollectionViewDa
 
 
 class TLPhotoLibraryPickerCell: UICollectionViewCell {
-    public var thumImgview = UIImageView.init()
+    public var thumImgview:UIImageView = {
+        let imgView = UIImageView.init()
+        imgView.contentMode = .scaleAspectFill
+        imgView.clipsToBounds = true
+        return imgView
+    }()
     
     public var asset:PHAsset?
     
