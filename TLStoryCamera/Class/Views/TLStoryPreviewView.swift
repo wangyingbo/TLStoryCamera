@@ -65,6 +65,10 @@ class TLStoryPreviewView: UIView {
     
     public      var silderView:TLStorySliderView?
     
+    public      var swipeUp:UISwipeGestureRecognizer?
+    
+    public      var tapGesture:UITapGestureRecognizer?
+    
     public weak var delegate:TLStoryPreviewDelegate?
     
     fileprivate var isDrawing = false
@@ -124,6 +128,13 @@ class TLStoryPreviewView: UIView {
         drawToolsBar!.delegate = self
         drawToolsBar!.isHidden = true
         self.addSubview(drawToolsBar!)
+        
+        swipeUp = UISwipeGestureRecognizer.init(target: self, action: #selector(addTagsAction))
+        swipeUp?.direction = .up
+        self.addGestureRecognizer(swipeUp!)
+        
+        tapGesture = UITapGestureRecognizer.init(target: self, action: #selector(addTextAction))
+        self.addGestureRecognizer(tapGesture!)
     }
     
     public func closeAction() {
@@ -140,6 +151,7 @@ class TLStoryPreviewView: UIView {
         self.drawToolsBar!.isHidden = false
         self.silderView!.isHidden = true
         self.silderView!.setDefaultValue(type: .draw)
+        self.allGesture(enable: false)
     }
     
     public func addTagsAction() {
@@ -148,6 +160,7 @@ class TLStoryPreviewView: UIView {
             self.stickerPickerView?.y = self.height - 380
         }) { (x) in
             self.hideAllIcons()
+            self.allGesture(enable: false)
         }
     }
     
@@ -174,6 +187,16 @@ class TLStoryPreviewView: UIView {
     
     public func showAllIcons() {
         
+    }
+    
+    public func allGesture(enable:Bool) {
+        if enable {
+            self.addGestureRecognizer(swipeUp!)
+            self.addGestureRecognizer(tapGesture!)
+        }else {
+            self.removeGestureRecognizer(swipeUp!)
+            self.removeGestureRecognizer(tapGesture!)
+        }
     }
     
     func getEditImg() -> UIImage? {
@@ -211,6 +234,7 @@ extension TLStoryPreviewView:TLStickerPickerViewDelegate {
     }
     func stickerPickerHidden(view:TLStickerPickerView) {
         self.showAllIcons()
+        self.allGesture(enable: true)
     }
 }
 
@@ -253,6 +277,7 @@ extension TLStoryPreviewView: TLStoryDrawToolBarDelegate {
         self.drawToolsBar!.isHidden = true
         self.silderView!.isHidden = true
         self.showAllIcons()
+        self.allGesture(enable: true)
     }
 }
 
@@ -311,11 +336,13 @@ extension TLStoryPreviewView: TLStoryTextEditerDelegate {
                 self.colorPalette!.y = self.height - 60
                 self.silderView!.y = self.colorPalette!.y - 195 + 20
             }
+            self.allGesture(enable: true)
         }else {
             UIView.animate(withDuration: 0.25) {
                 self.colorPalette?.y = self.height - 60 - offsetY
                 self.silderView!.y = self.colorPalette!.y - 195
             }
+            self.allGesture(enable: false)
         }
     }
     

@@ -91,15 +91,15 @@ public class TLStoryViewController: UIViewController {
         sender.setImage(imgs[mode], for: .normal)
     }
     
-    func switchAction(sender: UIButton) {
+    @objc fileprivate func switchAction(sender: UIButton) {
         cameraView?.rotateCamera()
     }
     
-    func swipeAction(sender:UISwipeGestureRecognizer) {
+    @objc fileprivate func swipeAction(sender:UISwipeGestureRecognizer) {
         self.photoLibraryPicker(hidden: sender.direction == .down)
     }
     
-    func photoLibraryPicker(hidden:Bool) {
+    fileprivate func photoLibraryPicker(hidden:Bool) {
         if hidden {
             UIView.animate(withDuration: 0.25, animations: {
                 self.coverBlurView.alpha = 0
@@ -118,7 +118,7 @@ public class TLStoryViewController: UIViewController {
         }
     }
     
-    func showPreview(type:StoryType, url:URL?) -> Void {
+    fileprivate func showPreview(type:StoryType, url:URL?) -> Void {
         guard let u = url else {
             return
         }
@@ -129,25 +129,36 @@ public class TLStoryViewController: UIViewController {
         }
     }
     
-    func showPhotoPreview(url:URL) {
+    fileprivate func showPhotoPreview(url:URL) {
         let photoView = TLStoryPhotoView.init(frame: view.bounds, url: url)
         photoView.delegate = self
         self.view.addSubview(photoView)
         self.cameraView?.pauseCamera()
+        self.swipeUp(enable: false)
     }
     
-    func showPhotoPreview(imgData:Data) {
+    fileprivate func showPhotoPreview(imgData:Data) {
         let photoView = TLStoryPhotoView.init(frame: view.bounds, imgData: imgData)
         photoView.delegate = self
         self.view.addSubview(photoView)
         self.cameraView?.pauseCamera()
+        self.swipeUp(enable: false)
     }
     
-    func showVideoPreview(url:URL) {
+    fileprivate func showVideoPreview(url:URL) {
         let videoView = TLStoryPlayerView.init(frame: view.bounds, url: url)
         videoView.delegate = self
         self.view.addSubview(videoView)
         self.cameraView?.pauseCamera()
+        self.swipeUp(enable: false)
+    }
+    
+    fileprivate func swipeUp(enable:Bool) {
+        if enable {
+            self.view.addGestureRecognizer(swipeUp!)
+        }else {
+            self.view.removeGestureRecognizer(swipeUp!)
+        }
     }
     
     override public var prefersStatusBarHidden: Bool {
@@ -160,7 +171,6 @@ extension TLStoryViewController : TLHoopButtonDelegate {
         cameraView?.initRecording()
         cameraView?.startRecording()
         photoLibraryHintView?.isHidden = true
-        self.view.removeGestureRecognizer(swipeUp!)
     }
     func hoopDrag(hoopButton: TLHoopButton, offsetY: CGFloat) {
         self.cameraView?.cameraZoom(offseY: offsetY)
@@ -193,7 +203,7 @@ extension TLStoryViewController : TLStoryPreviewDelegate {
         }
         
         photoLibraryHintView?.isHidden = false
-        self.view.addGestureRecognizer(swipeUp!)
+        self.swipeUp(enable: true)
     }
 }
 
@@ -201,13 +211,11 @@ extension TLStoryViewController: TLPhotoLibraryPickerViewDelegate {
     func photoLibraryPickerDidSelectPhoto(imgData: Data) {
         self.photoLibraryPicker(hidden: true)
         self.showPhotoPreview(imgData: imgData)
-        self.view.removeGestureRecognizer(self.swipeUp!)
     }
 
     func photoLibraryPickerDidSelectVideo(url: URL) {
         self.photoLibraryPicker(hidden: true)
         self.showPreview(type: .video, url: url)
-        self.view.removeGestureRecognizer(self.swipeUp!)
     }
 }
 
