@@ -31,6 +31,7 @@ class TLStorySliderView: UIView {
     public weak var delegate:TLSliderDelegate?
     
     fileprivate var path = UIBezierPath.init()
+    
     fileprivate var toPath = UIBezierPath.init()
     
     fileprivate var isBeginAnim = false
