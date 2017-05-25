@@ -48,7 +48,7 @@ class TLHoopButton: UIControl {
     
     fileprivate lazy var ringMaskLayer:CAShapeLayer = {
         var proLayer = CAShapeLayer()
-        proLayer.lineWidth = 2
+        proLayer.lineWidth = 3
         proLayer.strokeColor = UIColor.init(colorHex: 0x0056ff).cgColor
         proLayer.fillColor = UIColor.clear.cgColor
         proLayer.lineJoin = kCALineJoinRound
@@ -65,7 +65,9 @@ class TLHoopButton: UIControl {
         return gradientLayer
     }()
     
-    fileprivate var isBeginAnim:Bool = false
+    fileprivate var insideCircleViewTransform:CGAffineTransform?
+    
+    fileprivate var blureCircleViewTransform:CGAffineTransform?
     
     fileprivate var timer:CADisplayLink?
     
@@ -101,30 +103,27 @@ class TLHoopButton: UIControl {
         self.bounds = CGRect.init(x: 0, y: 0, width: zoomInSize.width, height: zoomInSize.height)
         self.center = CGPoint.init(x: superview!.width / 2, y: superview!.bounds.height - 30 - 60)
         self.insideCircleView.center = centerPoint
-        self.zoom(begin: true)
+        self.touchBeginAnim()
         self.gradientLayer.bounds = self.bounds;
         self.gradientLayer.position = self.centerPoint
-        
+        self.delegete?.hoopStart(hoopButton: self)
+    }
+    
+    fileprivate func startTimer() {
         timer?.invalidate()
         timer = CADisplayLink.init(target: self, selector: #selector(countDownd))
         timer?.add(to: RunLoop.current, forMode: RunLoopMode.commonModes)
-        
-        if let delegate = delegete {
-            delegate.hoopStart(hoopButton: self)
-        }
     }
     
     public func complete() {
         timer?.invalidate()
         timer = nil
         
-        if let delegate = delegete {
-            delegate.hoopComplete(hoopButton: self, type: progress < CGFloat(TLStoryConfiguration.minRecordingTime) ? .photo : .video)
-        }
+        self.delegete?.hoopComplete(hoopButton: self, type: progress < CGFloat(TLStoryConfiguration.minRecordingTime) ? .photo : .video)
         percent = 0
         progress = 0
         self.setNeedsDisplay()
-        self.isHidden = true
+        self.reset()
     }
     
     @objc fileprivate func draggedAction(sender:UIButton, event:UIEvent) {
@@ -136,13 +135,18 @@ class TLHoopButton: UIControl {
         }
     }
     
-    public func reset() {
+    fileprivate func reset() {
+        self.isHidden = true
         self.bounds = CGRect.init(x: 0, y: 0, width: zoomOutSize.width, height: zoomOutSize.height)
         self.center = CGPoint.init(x: superview!.width / 2, y: superview!.bounds.height - 53 - 40)
         self.insideCircleView.center = centerPoint
-        self.zoom(begin: false)
         blureCircleView.isHidden = false
-        self.isHidden = false
+        
+        blureCircleView.transform = blureCircleViewTransform!
+        blureCircleView.center = centerPoint
+        
+        insideCircleView.alpha = 1
+        insideCircleView.transform = insideCircleViewTransform!
     }
     
     @objc fileprivate func countDownd() {
@@ -155,24 +159,39 @@ class TLHoopButton: UIControl {
         self.setNeedsDisplay()
     }
     
-    fileprivate func zoom(begin:Bool) {
+    fileprivate func touchBeginAnim() {
         blureCircleView.center = centerPoint
-
+        
+        let insideCircleScaleAnim = CABasicAnimation.init(keyPath: "transform.scale")
+        insideCircleScaleAnim.fromValue = 1
+        insideCircleScaleAnim.toValue = 0.8
+        
+        let insideCircleAlphaAnim = CABasicAnimation.init(keyPath: "opacity")
+        insideCircleAlphaAnim.fromValue = 1
+        insideCircleAlphaAnim.toValue = 0.6
+        
+        let insideCircleGroupAnim = CAAnimationGroup.init()
+        insideCircleGroupAnim.animations = [insideCircleAlphaAnim,insideCircleScaleAnim]
+        insideCircleGroupAnim.duration = 0.35
+        insideCircleGroupAnim.isRemovedOnCompletion = false
+        insideCircleGroupAnim.fillMode = kCAFillModeBoth
+        insideCircleGroupAnim.delegate = self
+        
+        insideCircleView.layer.add(insideCircleGroupAnim, forKey: "insideCircleAnim")
+        
         let anim = CABasicAnimation.init(keyPath: "transform.scale")
-        anim.fromValue = begin ? 1 : 1.5
-        anim.toValue = begin ? 1.5 : 1
-        anim.fillMode = kCAFillModeForwards
+        anim.fromValue = 1
+        anim.toValue = 1.5
+        anim.fillMode = kCAFillModeBoth
         anim.isRemovedOnCompletion = false
-        anim.duration = 0.25
+        anim.duration = 0.35
         anim.delegate = self
         
-        isBeginAnim = begin
-        
-        blureCircleView.layer.add(anim, forKey: "scale")
+        blureCircleView.layer.add(anim, forKey: "blureCircleScale")
     }
     
     internal override func draw(_ rect: CGRect) {
-        let path = UIBezierPath.init(arcCenter: CGPoint.init(x: self.width / 2.0, y: self.height / 2.0), radius: 59, startAngle:  1.5 * CGFloat(Double.pi), endAngle: 1.5 * CGFloat(Double.pi) + percent, clockwise: true)
+        let path = UIBezierPath.init(arcCenter: CGPoint.init(x: self.width / 2.0, y: self.height / 2.0), radius: 58, startAngle:  1.5 * CGFloat(Double.pi), endAngle: 1.5 * CGFloat(Double.pi) + percent, clockwise: true)
         self.ringMaskLayer.path = path.cgPath
     }
     
@@ -186,12 +205,18 @@ extension TLHoopButton: CAAnimationDelegate {
         if !flag {
             return
         }
-        blureCircleView.layer.removeAnimation(forKey: "anim")
+        if let a = insideCircleView.layer.animation(forKey: "insideCircleAnim"), a.isEqual(anim) {
+            insideCircleView.alpha = 0.6
+            insideCircleViewTransform = insideCircleView.transform
+            insideCircleView.transform = insideCircleView.transform.scaledBy(x: 0.8, y: 0.8)
+            insideCircleView.layer.removeAnimation(forKey: "insideCircleAnim")
+        }
         
-        if isBeginAnim {
-            blureCircleView.transform.scaledBy(x: 1.5, y: 1.5)
-        }else {
-            blureCircleView.transform.scaledBy(x: 1, y: 1)
+        if let a = blureCircleView.layer.animation(forKey: "blureCircleScale"), a.isEqual(anim) {
+            blureCircleViewTransform = blureCircleView.transform
+            blureCircleView.transform = blureCircleView.transform.scaledBy(x: 1.5, y: 1.5)
+            blureCircleView.layer.removeAnimation(forKey: "blureCircleScale")
+            self.startTimer()
         }
     }
 }

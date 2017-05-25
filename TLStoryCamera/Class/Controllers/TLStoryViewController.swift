@@ -196,10 +196,12 @@ extension TLStoryViewController : TLHoopButtonDelegate {
 extension TLStoryViewController : TLStoryPreviewDelegate {
     func storyPreviewClose() {
         cameraView?.resumeCamera()
-        self.startBtn.reset()
+        self.startBtn.alpha = 0
+        self.startBtn.isHidden = false
         UIView.animate(withDuration: 0.25) {
             self.flashBtn.alpha = 1
             self.switchBtn.alpha = 1
+            self.startBtn.alpha = 1
         }
         
         photoLibraryHintView?.isHidden = false
