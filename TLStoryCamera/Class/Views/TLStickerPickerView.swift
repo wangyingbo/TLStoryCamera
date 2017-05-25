@@ -15,9 +15,13 @@ protocol TLStickerPickerViewDelegate: NSObjectProtocol {
 
 class TLStickerPickerView: UIVisualEffectView {
     fileprivate var handleView = UIView.init()
+    
     fileprivate var handleBgView = UIView.init()
+    
     fileprivate var collectionView:UICollectionView?
+    
     public weak var delegate:TLStickerPickerViewDelegate?
+    
     fileprivate var stickers:[UIImage] = {
         var array = [UIImage]()
         let plist = Bundle.main.path(forResource: "WBStoryStickers", ofType: "plist")
@@ -32,9 +36,11 @@ class TLStickerPickerView: UIVisualEffectView {
         return array
     }()
     
-    var pincheGesture:UIPanGestureRecognizer?
-    var beginPoint = CGPoint.zero
-    var offsetY:CGFloat = 0
+    fileprivate var pincheGesture:UIPanGestureRecognizer?
+    
+    fileprivate var beginPoint = CGPoint.zero
+    
+    fileprivate var offsetY:CGFloat = 0
     
     init(frame:CGRect) {
         super.init(effect: UIBlurEffect.init(style: .light))
@@ -77,7 +83,7 @@ class TLStickerPickerView: UIVisualEffectView {
         handleBgView.addGestureRecognizer(pincheGesture!)
     }
     
-    func pincheAction(sender:UIPanGestureRecognizer) -> Void {
+    @objc fileprivate func pincheAction(sender:UIPanGestureRecognizer) -> Void {
         let point = sender.location(in: self.superview)
         
         if sender.state == .began {
@@ -122,15 +128,15 @@ class TLStickerPickerView: UIVisualEffectView {
     }
 }
 extension TLStickerPickerView:UICollectionViewDelegate, UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    internal func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! TLStickerCell
         cell.imgView.image = stickers[indexPath.row]
         return cell
     }
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    internal func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return stickers.count
     }
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    internal func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath) as! TLStickerCell
         
         UIView.animate(withDuration: 0.3, animations: {
@@ -148,7 +154,7 @@ extension TLStickerPickerView:UICollectionViewDelegate, UICollectionViewDataSour
 }
 
 extension TLStickerPickerView: UIScrollViewDelegate {
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    internal func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.y <= -20 {
             if let gesture = pincheGesture {
                 scrollView.removeGestureRecognizer(gesture)

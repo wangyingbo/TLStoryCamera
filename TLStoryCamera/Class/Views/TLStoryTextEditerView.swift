@@ -59,7 +59,7 @@ class TLStoryTextEditerView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func show(sticker:TLStickerTextView?) {
+    public func show(sticker:TLStickerTextView?) {
         self.isHidden = false
         
         if let s = sticker {
@@ -84,7 +84,7 @@ class TLStoryTextEditerView: UIView {
         inputTextView.becomeFirstResponder()
     }
     
-    func keyboardWillShow(sender:NSNotification) {
+    @objc fileprivate func keyboardWillShow(sender:NSNotification) {
         guard let frame = (sender.userInfo?[UIKeyboardFrameEndUserInfoKey] as AnyObject).cgRectValue else {
             return
         }
@@ -102,7 +102,7 @@ class TLStoryTextEditerView: UIView {
         self.delegate?.textEditerKeyboard(hidden: false, offsetY: frame.height)
     }
     
-    func keyboardWillHide() {
+    @objc fileprivate func keyboardWillHide() {
         if editingSticker != nil {
             self.hideAnim()
         }else {
@@ -112,7 +112,7 @@ class TLStoryTextEditerView: UIView {
         self.delegate?.textEditerKeyboard(hidden: true, offsetY: 0)
     }
     
-    func competeEdit() {
+    @objc fileprivate func competeEdit() {
         if let s = editingSticker {
             s.font = inputTextView.font
             s.text = inputTextView.text
@@ -135,7 +135,7 @@ class TLStoryTextEditerView: UIView {
         }
     }
     
-    func showAnim(to point:CGPoint) {
+    fileprivate func showAnim(to point:CGPoint) {
         let radians = atan2f(Float(self.editingSticker!.transform.b), Float(self.editingSticker!.transform.a))
 
         let positionAnim = CABasicAnimation.init(keyPath: "position")
@@ -154,7 +154,7 @@ class TLStoryTextEditerView: UIView {
         self.inputTextView.layer.add(groupAnim, forKey: "beginAnim")
     }
     
-    func hideAnim() {
+    fileprivate func hideAnim() {
         let radians = atan2f(Float(self.editingSticker!.transform.b), Float(self.editingSticker!.transform.a))
         
         let positionAnim = CABasicAnimation.init(keyPath: "position")
@@ -175,16 +175,16 @@ class TLStoryTextEditerView: UIView {
         self.inputTextView.layer.add(groupAnim, forKey: "endAnim")
     }
     
-    func setTextColor(color:UIColor) {
+    public func setTextColor(color:UIColor) {
         self.inputTextView.textColor = color
     }
     
-    func setTextSize(size:CGFloat) {
+    public func setTextSize(size:CGFloat) {
         self.inputTextView.font = UIFont.boldSystemFont(ofSize: size)
         self.inputTextView.height = size + 20
     }
     
-    func setTextAlignment() -> NSTextAlignment {
+    public func setTextAlignment() -> NSTextAlignment {
         let r = inputTextView.textAlignment.rawValue + 1
         let textAlignment = NSTextAlignment(rawValue: r > 2 ? 0 : r)!
         inputTextView.textAlignment = textAlignment
@@ -193,7 +193,7 @@ class TLStoryTextEditerView: UIView {
 }
 
 extension TLStoryTextEditerView: CAAnimationDelegate {
-    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
+    internal func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         self.inputTextView.center = self.editingSticker!.center
         self.inputTextView.layer.removeAllAnimations()
         if let s = editingSticker {
@@ -205,7 +205,7 @@ extension TLStoryTextEditerView: CAAnimationDelegate {
 }
 
 extension TLStoryTextEditerView: UITextViewDelegate {
-    func textViewDidChange(_ textView: UITextView) {
+    internal func textViewDidChange(_ textView: UITextView) {
         if (textView.markedTextRange == nil) {
             textView.flashScrollIndicators()
             
@@ -214,7 +214,7 @@ extension TLStoryTextEditerView: UITextViewDelegate {
         }
     }
     
-    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+    internal func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if text == "\n" {
             self.competeEdit()
             return false
@@ -224,11 +224,11 @@ extension TLStoryTextEditerView: UITextViewDelegate {
 }
 
 extension TLStoryTextEditerView: TLStoryTextInputToolsBarDelegate {
-    func textInputToolsBarChange() -> NSTextAlignment {
+    internal func textInputToolsBarChange() -> NSTextAlignment {
         return self.setTextAlignment()
     }
     
-    func textInputToolsBarConfirm() {
+    internal func textInputToolsBarConfirm() {
         self.competeEdit()
     }
 }

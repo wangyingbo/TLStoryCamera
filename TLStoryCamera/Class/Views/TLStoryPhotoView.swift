@@ -41,11 +41,11 @@ class TLStoryPhotoView: TLStoryPreviewView {
         imgView.image = sourceImg
     }
     
-    override func saveAction() {
+    internal override func saveAction() {
         self.handlePhoto()
     }
     
-    override func hideAllIcons() {
+    internal override func hideAllIcons() {
         UIView.animate(withDuration: 0.15) {
             self.drawBtn.alpha = 0
             self.closeBtn.alpha = 0
@@ -55,7 +55,7 @@ class TLStoryPhotoView: TLStoryPreviewView {
         }
     }
     
-    override func showAllIcons() {
+    internal override func showAllIcons() {
         UIView.animate(withDuration: 0.15) {
             self.drawBtn.alpha = 1
             self.closeBtn.alpha = 1

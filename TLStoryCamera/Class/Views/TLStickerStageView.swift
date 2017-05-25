@@ -27,7 +27,7 @@ class TLStickerStageView: UIView {
     
     fileprivate var tap:UITapGestureRecognizer?
     
-    weak var delegate:TLStickerStageViewDelegate?
+    public weak var delegate:TLStickerStageViewDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -54,27 +54,27 @@ class TLStickerStageView: UIView {
         stickers.append(sticker)
     }
     
-    func removeSticker(sticker:UIView) {
+    public func removeSticker(sticker:UIView) {
         sticker.removeFromSuperview()
         
         if let index = stickers.index(of: sticker) {
             stickers.remove(at: index)
         }
     }
-
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
 extension TLStickerStageView: TLStickerTextViewDelegate {
-    func stickerTextViewEditing(sticker: TLStickerTextView) {
+    internal func stickerTextViewEditing(sticker: TLStickerTextView) {
         self.delegate?.stickerStageTextEditing(textSticker: sticker)
     }
 }
 
 extension TLStickerStageView : TLStickerViewDelegate {
-    func stickerViewBecomeFirstRespond(sticker: UIView) {
+    internal func stickerViewBecomeFirstRespond(sticker: UIView) {
         for v in stickers {
             if v == sticker {
                 self.bringSubview(toFront: v)
@@ -82,8 +82,8 @@ extension TLStickerStageView : TLStickerViewDelegate {
             }
         }
     }
-
-    func stickerViewDraggingDelete(point: CGPoint, sticker: UIView, isEnd: Bool) {
+    
+    internal func stickerViewDraggingDelete(point: CGPoint, sticker: UIView, isEnd: Bool) {
         let cPoint = self.convert(point, to: deleteImgView)
         if self.deleteImgView.point(inside: cPoint, with: nil) {
             if !isPrepareDelete {

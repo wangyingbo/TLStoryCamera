@@ -34,11 +34,11 @@ protocol TLStickerViewDelegate:NSObjectProtocol {
 }
 
 class TLStickerView: UIImageView, TLStickerViewZoomProtocol {
-    static let DefaultWidth = 100
-    var minWidth:CGFloat = 0
-    var minHeight:CGFloat = 0
-    weak var delegate:TLStickerViewDelegate?
-    var lastScale:CGFloat = 1.0
+    fileprivate static let DefaultWidth = 100
+    fileprivate var minWidth:CGFloat = 0
+    fileprivate var minHeight:CGFloat = 0
+    public weak var delegate:TLStickerViewDelegate?
+    fileprivate var lastScale:CGFloat = 1.0
     
     init(img:UIImage, bgView:TLStickerStageView) {
         super.init(frame: CGRect.init(x: 0, y: 0, width: TLStickerView.DefaultWidth, height: TLStickerView.DefaultWidth))
@@ -68,7 +68,7 @@ class TLStickerView: UIImageView, TLStickerViewZoomProtocol {
         minHeight = self.bounds.height * 0.5
     }
     
-    @objc func pan(gesture:UIPanGestureRecognizer) {
+    @objc fileprivate func pan(gesture:UIPanGestureRecognizer) {
         let translation = gesture.translation(in: self.superview)
         var newP = CGPoint.init(x: self.center.x + translation.x, y: self.center.y + translation.y)
         newP.y = max(self.bounds.height / 2, newP.y)
@@ -81,7 +81,7 @@ class TLStickerView: UIImageView, TLStickerViewZoomProtocol {
         self.delegate?.stickerViewDraggingDelete(point: newP, sticker: self, isEnd: gesture.state == .ended || gesture.state == .cancelled)
     }
     
-    @objc func tap(gesture:UITapGestureRecognizer) {
+    @objc fileprivate func tap(gesture:UITapGestureRecognizer) {
         let scaleAnim = CABasicAnimation.init(keyPath: "transform.scale")
         scaleAnim.fromValue = self.transform.d
         scaleAnim.toValue = self.transform.d - 0.1
@@ -97,11 +97,11 @@ class TLStickerView: UIImageView, TLStickerViewZoomProtocol {
         groupAnim.duration = 0.1
         
         self.layer.add(groupAnim, forKey: nil)
-
+        
         self.delegate?.stickerViewBecomeFirstRespond(sticker: self)
     }
     
-    @objc func pinche(pinche:UIPinchGestureRecognizer) {
+    @objc fileprivate func pinche(pinche:UIPinchGestureRecognizer) {
         self.delegate?.stickerViewBecomeFirstRespond(sticker: self)
         
         if(pinche.state == .ended) {
@@ -118,7 +118,7 @@ class TLStickerView: UIImageView, TLStickerViewZoomProtocol {
         lastScale = pinche.scale
     }
     
-    @objc func rotate(rotate:UIRotationGestureRecognizer) {
+    @objc fileprivate func rotate(rotate:UIRotationGestureRecognizer) {
         self.delegate?.stickerViewBecomeFirstRespond(sticker: self)
         self.transform = self.transform.rotated(by: rotate.rotation)
         rotate.rotation = 0
@@ -134,7 +134,7 @@ class TLStickerView: UIImageView, TLStickerViewZoomProtocol {
 }
 
 extension TLStickerView: UIGestureRecognizerDelegate {
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    internal func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
 }

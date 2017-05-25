@@ -87,15 +87,15 @@ class TLPhotoLibraryPickerView: UIView {
 }
 
 extension TLPhotoLibraryPickerView: UICollectionViewDelegate, UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    internal func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return imgs.count
     }
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    internal func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! TLPhotoLibraryPickerCell
         cell.set(asset: self.imgs[indexPath.row])
         return cell
     }
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    internal func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let asset = self.imgs[indexPath.row]
         print(asset.mediaType)
         if asset.mediaType == .video {
@@ -144,7 +144,7 @@ class TLPhotoLibraryPickerCell: UICollectionViewCell {
         self.contentView.addSubview(durationLabel)
     }
     
-    func set(asset:PHAsset) {
+    public func set(asset:PHAsset) {
         self.asset = asset
         
         PHCachingImageManager.default().requestImage(for: asset, targetSize: self.size, contentMode: PHImageContentMode.aspectFill, options: nil) { (image, nfo) in

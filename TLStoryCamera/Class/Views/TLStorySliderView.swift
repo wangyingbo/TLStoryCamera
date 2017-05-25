@@ -69,12 +69,12 @@ class TLStorySliderView: UIView {
         self.addGestureRecognizer(tap)
     }
     
-    func updateRatio(centerY:CGFloat) {
+    public func updateRatio(centerY:CGFloat) {
         self.ratio = (self.height - centerY) / (self.height)
         self.delegate?.sliderDragging(ratio: self.ratio)
     }
     
-    func setDefaultValue(type:TLStoryDeployType) {
+    public func setDefaultValue(type:TLStoryDeployType) {
         if type == .text {
             let ratio = (TLStoryConfiguration.defaultTextWeight - TLStoryConfiguration.minTextWeight) / (TLStoryConfiguration.maxTextWeight - TLStoryConfiguration.minTextWeight)
             self.blockView.centerY = (self.height - 30) * (1 - ratio)
@@ -88,7 +88,7 @@ class TLStorySliderView: UIView {
         }
     }
     
-    func beginTouchAnim(autoreverses:Bool, isBegin:Bool) {
+    fileprivate func beginTouchAnim(autoreverses:Bool, isBegin:Bool) {
         let pathAnim = CABasicAnimation.init(keyPath: "path")
         pathAnim.fromValue = isBegin ? path.cgPath : toPath.cgPath
         pathAnim.toValue = isBegin ? toPath.cgPath : path.cgPath
@@ -114,7 +114,7 @@ class TLStorySliderView: UIView {
         self.sliderLayer.add(groupAnim, forKey: nil)
     }
     
-    func panAction(sender:UIPanGestureRecognizer) {
+    @objc fileprivate func panAction(sender:UIPanGestureRecognizer) {
         let point = sender.location(in: self)
         
         if point.y < 15 || point.y > self.height - 15 {
@@ -141,7 +141,7 @@ class TLStorySliderView: UIView {
         }
     }
     
-    func tapAction(sender:UITapGestureRecognizer) {
+    @objc fileprivate func tapAction(sender:UITapGestureRecognizer) {
         let point = sender.location(in: self)
         if point.y < 15 || point.y > self.height - 15 {
             return
@@ -159,7 +159,7 @@ class TLStorySliderView: UIView {
 }
 
 extension TLStorySliderView: CAAnimationDelegate {
-    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
+    internal func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         if !flag {
             return
         }

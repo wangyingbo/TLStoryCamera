@@ -55,7 +55,7 @@ class TLStoryPlayerView: TLStoryPreviewView {
         player?.play()
     }
     
-    func audioEnableAction(sender:UIButton) {
+    @objc fileprivate func audioEnableAction(sender:UIButton) {
         sender.isSelected = !sender.isSelected
         if sender.isSelected {
             oldVolume = self.player?.volume ?? 0
@@ -65,7 +65,7 @@ class TLStoryPlayerView: TLStoryPreviewView {
         }
     }
     
-    override func saveAction() {
+    internal override func saveAction() {
         self.handleVideo()
     }
     
@@ -87,7 +87,7 @@ class TLStoryPlayerView: TLStoryPreviewView {
         return nil
     }
     
-    func handleVideo() {
+    fileprivate func handleVideo() {
         guard let u = url else {
             return
         }
@@ -157,8 +157,8 @@ class TLStoryPlayerView: TLStoryPreviewView {
             })
         }
     }
-        
-    override func hideAllIcons() {
+    
+    internal override func hideAllIcons() {
         UIView.animate(withDuration: 0.15) {
             self.audioEnableBtn.alpha = 0
             self.drawBtn.alpha = 0
@@ -169,7 +169,7 @@ class TLStoryPlayerView: TLStoryPreviewView {
         }
     }
     
-    override func showAllIcons() {
+    internal override func showAllIcons() {
         UIView.animate(withDuration: 0.15) {
             self.audioEnableBtn.alpha = 1
             self.drawBtn.alpha = 1

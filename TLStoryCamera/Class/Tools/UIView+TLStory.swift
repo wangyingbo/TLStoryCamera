@@ -127,7 +127,7 @@ extension UIView {
         }
     }
     
-    func screenshot() -> UIImage {
+    public func screenshot() -> UIImage {
         UIGraphicsBeginImageContextWithOptions(UIScreen.main.bounds.size, false, UIScreen.main.scale)
         self.layer.render(in: UIGraphicsGetCurrentContext()!)
         let newImage = UIGraphicsGetImageFromCurrentImageContext()

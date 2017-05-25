@@ -81,7 +81,7 @@ class TLColorPaletteView: UIView {
         self.addSubview(sliderBtn)
     }
     
-    func setDefault(color:UIColor?) {
+    public func setDefault(color:UIColor?) {
         if let c = color, let index = colors.index(of: c) {
             collectionView?.scrollToItem(at: IndexPath.init(row: index, section: 0), at: .left, animated: false)
             sliderBtn.backgroundColor = c
@@ -91,7 +91,7 @@ class TLColorPaletteView: UIView {
         }
     }
     
-    func sliderAction(sender:UIButton) {
+    @objc fileprivate func sliderAction(sender:UIButton) {
         sender.isSelected = !sender.isSelected
         self.delegate?.colorPaletteSliderView(hidden: !sender.isSelected)
     }
@@ -102,16 +102,16 @@ class TLColorPaletteView: UIView {
 }
 
 extension TLColorPaletteView: UICollectionViewDelegate, UICollectionViewDataSource, UIScrollViewDelegate, UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    internal func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return colors.count
     }
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    internal func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! TLColorPaletteCell
         cell.color = colors[indexPath.row]
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    internal func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath) as! TLColorPaletteCell
         cell.selectedAnim()
         let color = colors[indexPath.row]
@@ -119,7 +119,7 @@ extension TLColorPaletteView: UICollectionViewDelegate, UICollectionViewDataSour
         self.delegate?.colorPaletteDidSelected(color: color)
     }
     
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    internal func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         self.pageControl.currentPage = Int(scrollView.contentOffset.x / scrollView.width)
     }
 }

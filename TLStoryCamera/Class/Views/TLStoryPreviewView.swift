@@ -13,7 +13,6 @@ protocol TLStoryPreviewDelegate:NSObjectProtocol {
 }
 
 class TLStoryPreviewView: UIView {
-    
     public var editedImg:UIImage?
     
     public lazy var closeBtn:TLButton = {
@@ -204,7 +203,7 @@ class TLStoryPreviewView: UIView {
         }
     }
     
-    func getEditImg() -> UIImage? {
+    public func getEditImg() -> UIImage? {
         let drawImg = self.drawView!.screenshot()
         let stickerImg = self.stageView!.screenshot()
         return drawImg.imageMontage(img: stickerImg)
@@ -232,19 +231,19 @@ class TLStoryPreviewView: UIView {
 }
 
 extension TLStoryPreviewView:TLStickerPickerViewDelegate {
-    func stickerPickerDidSelectedStickers(img: UIImage) {
+    internal func stickerPickerDidSelectedStickers(img: UIImage) {
         stageView?.addSticker(img: img)
         self.isDrawing = false
         stageView?.isUserInteractionEnabled = true
     }
-    func stickerPickerHidden(view:TLStickerPickerView) {
+    internal func stickerPickerHidden(view:TLStickerPickerView) {
         self.showAllIcons()
         self.allGesture(enable: true)
     }
 }
 
 extension TLStoryPreviewView: TLStickerStageViewDelegate {
-    func stickerStageStickerDragging(_ dragging: Bool) {
+    internal func stickerStageStickerDragging(_ dragging: Bool) {
         if dragging {
             self.hideAllIcons()
         }else {
@@ -252,7 +251,7 @@ extension TLStoryPreviewView: TLStickerStageViewDelegate {
         }
     }
     
-    func stickerStageTextEditing(textSticker: TLStickerTextView) {
+    internal func stickerStageTextEditing(textSticker: TLStickerTextView) {
         textSticker.isHidden = true
         self.colorPalette!.setDefault(color: textSticker.textColor)
         self.textEditer?.show(sticker: textSticker)
@@ -261,7 +260,7 @@ extension TLStoryPreviewView: TLStickerStageViewDelegate {
 }
 
 extension TLStoryPreviewView: TLStoryDrawViewDelegate {
-    func drawView(drawing: Bool) {
+    internal func drawView(drawing: Bool) {
         self.hideAllIcons()
         self.colorPalette!.isHidden = drawing
         self.drawToolsBar!.isHidden = drawing
@@ -272,10 +271,10 @@ extension TLStoryPreviewView: TLStoryDrawViewDelegate {
 }
 
 extension TLStoryPreviewView: TLStoryDrawToolBarDelegate {
-    func undo() {
+    internal func undo() {
         self.drawView?.undo()
     }
-    func confrim() {
+    internal func confrim() {
         isDrawing = false
         stageView?.isUserInteractionEnabled = true
         self.colorPalette!.isHidden = true
@@ -287,7 +286,7 @@ extension TLStoryPreviewView: TLStoryDrawToolBarDelegate {
 }
 
 extension TLStoryPreviewView: TLSliderDelegate {
-    func sliderDragging(ratio: CGFloat) {
+    internal func sliderDragging(ratio: CGFloat) {
         if isDrawing {
             let lineWidth = (TLStoryConfiguration.maxDrawLineWeight - TLStoryConfiguration.minDrawLineWeight) * ratio + TLStoryConfiguration.minDrawLineWeight
             self.drawView?.lineWidth = lineWidth
@@ -301,7 +300,7 @@ extension TLStoryPreviewView: TLSliderDelegate {
 }
 
 extension TLStoryPreviewView: TLColorPaletteViewDelegate {
-    func colorPaletteDidSelected(color: UIColor) {
+    internal func colorPaletteDidSelected(color: UIColor) {
         if isDrawing {
             drawView?.lineColor = color
         }
@@ -311,7 +310,7 @@ extension TLStoryPreviewView: TLColorPaletteViewDelegate {
         }
     }
     
-    func colorPaletteSliderView(hidden: Bool) {
+    internal func colorPaletteSliderView(hidden: Bool) {
         if hidden {
             UIView.animate(withDuration: 0.25, animations: {
                 self.silderView!.y = self.colorPalette!.y - 195 + 20
@@ -331,7 +330,7 @@ extension TLStoryPreviewView: TLColorPaletteViewDelegate {
 }
 
 extension TLStoryPreviewView: TLStoryTextEditerDelegate {
-    func textEditerKeyboard(hidden: Bool, offsetY: CGFloat) {
+    internal func textEditerKeyboard(hidden: Bool, offsetY: CGFloat) {
         self.colorPalette!.isHidden = hidden
         self.isTextInput = !hidden
         
@@ -351,7 +350,7 @@ extension TLStoryPreviewView: TLStoryTextEditerDelegate {
         }
     }
     
-    func textEditerDidCompleteEdited(sticker: TLStickerTextView, isNew: Bool) {
+    internal func textEditerDidCompleteEdited(sticker: TLStickerTextView, isNew: Bool) {
         if isNew {
             self.stageView?.addTextView(sticker: sticker)
         }else {

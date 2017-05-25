@@ -13,11 +13,11 @@ protocol TLStickerTextViewDelegate: TLStickerViewDelegate {
 }
 
 class TLStickerTextView: UILabel, TLStickerViewZoomProtocol {
-    weak var delegate:TLStickerTextViewDelegate?
+    public weak var delegate:TLStickerTextViewDelegate?
     
-    var lastPosition:CGPoint = CGPoint.zero
+    fileprivate var lastPosition:CGPoint = CGPoint.zero
     
-    var lastScale:CGFloat = 1.0
+    fileprivate var lastScale:CGFloat = 1.0
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -46,7 +46,7 @@ class TLStickerTextView: UILabel, TLStickerViewZoomProtocol {
         self.addGestureRecognizer(rotateGesture)
     }
     
-    @objc func pan(gesture:UIPanGestureRecognizer) {
+    @objc fileprivate func pan(gesture:UIPanGestureRecognizer) {
         let translation = gesture.translation(in: self.superview)
         let newP = CGPoint.init(x: self.center.x + translation.x, y: self.center.y + translation.y)
         self.center = newP
@@ -55,12 +55,12 @@ class TLStickerTextView: UILabel, TLStickerViewZoomProtocol {
         self.delegate?.stickerViewDraggingDelete(point: newP, sticker: self, isEnd: gesture.state == .ended)
     }
     
-    @objc func tap(tap:UITapGestureRecognizer) {
+    @objc fileprivate func tap(tap:UITapGestureRecognizer) {
         self.delegate?.stickerViewBecomeFirstRespond(sticker: self)
         self.delegate?.stickerTextViewEditing(sticker: self)
     }
     
-    @objc func pinche(pinche:UIPinchGestureRecognizer) {
+    @objc fileprivate func pinche(pinche:UIPinchGestureRecognizer) {
         self.delegate?.stickerViewBecomeFirstRespond(sticker: self)
         
         if(pinche.state == .ended) {
@@ -77,13 +77,13 @@ class TLStickerTextView: UILabel, TLStickerViewZoomProtocol {
         lastScale = pinche.scale
     }
     
-    @objc func rotate(rotate:UIRotationGestureRecognizer) {
+    @objc fileprivate func rotate(rotate:UIRotationGestureRecognizer) {
         self.delegate?.stickerViewBecomeFirstRespond(sticker: self)
         self.transform = self.transform.rotated(by: rotate.rotation)
         rotate.rotation = 0
     }
     
-    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+    internal override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
     

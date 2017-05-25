@@ -41,7 +41,7 @@ public class TLStoryViewController: UIViewController {
         self.view = TLStoryBgView.init(frame: UIScreen.main.bounds)
     }
     
-    override public func viewDidLoad() {
+    public func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
         self.view.isUserInteractionEnabled = true
@@ -169,15 +169,15 @@ public class TLStoryViewController: UIViewController {
 }
 
 extension TLStoryViewController : TLHoopButtonDelegate {
-    func hoopStart(hoopButton: TLHoopButton) {
+    internal func hoopStart(hoopButton: TLHoopButton) {
         cameraView?.initRecording()
         cameraView?.startRecording()
         photoLibraryHintView?.isHidden = true
     }
-    func hoopDrag(hoopButton: TLHoopButton, offsetY: CGFloat) {
+    internal func hoopDrag(hoopButton: TLHoopButton, offsetY: CGFloat) {
         self.cameraView?.cameraZoom(offseY: offsetY)
     }
-    func hoopComplete(hoopButton: TLHoopButton, type: StoryType) {
+    internal func hoopComplete(hoopButton: TLHoopButton, type: StoryType) {
         if type == .photo {
             self.cameraView?.capturePhoto(complete: { [weak self] (x) in
                 self?.showPreview(type: .photo, url: x)
@@ -196,7 +196,7 @@ extension TLStoryViewController : TLHoopButtonDelegate {
 }
 
 extension TLStoryViewController : TLStoryPreviewDelegate {
-    func storyPreviewClose() {
+    internal func storyPreviewClose() {
         cameraView?.resumeCamera()
         UIView.animate(withDuration: 0.25) {
             self.flashBtn.alpha = 1
@@ -209,12 +209,12 @@ extension TLStoryViewController : TLStoryPreviewDelegate {
 }
 
 extension TLStoryViewController: TLPhotoLibraryPickerViewDelegate {
-    func photoLibraryPickerDidSelectPhoto(imgData: Data) {
+    internal func photoLibraryPickerDidSelectPhoto(imgData: Data) {
         self.photoLibraryPicker(hidden: true)
         self.showPhotoPreview(imgData: imgData)
     }
     
-    func photoLibraryPickerDidSelectVideo(url: URL) {
+    internal func photoLibraryPickerDidSelectVideo(url: URL) {
         self.photoLibraryPicker(hidden: true)
         self.showPreview(type: .video, url: url)
     }

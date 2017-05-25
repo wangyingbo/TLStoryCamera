@@ -9,13 +9,13 @@
 import Foundation
 
 extension UIImage {
-    static func imageWithStickers(named:String) -> UIImage? {
+    public static func imageWithStickers(named:String) -> UIImage? {
         let bundlePath = Bundle.main.path(forResource: "WBStoryStickers", ofType: "bundle")
         let bundle = Bundle.init(path: bundlePath!)
         return UIImage.init(contentsOfFile: (bundle?.path(forResource: named, ofType: "png"))!)
     }
     
-    func imageMontage(img:UIImage) -> UIImage {
+    public func imageMontage(img:UIImage) -> UIImage {
         UIGraphicsBeginImageContext(self.size)
         let rect = CGRect.init(x: 0, y: 0, width: self.size.width, height: self.size.height)
         self.draw(in: rect)
