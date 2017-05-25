@@ -241,14 +241,16 @@ protocol TLStoryTextInputToolsBarDelegate:NSObjectProtocol {
 }
 
 class TLStoryTextInputToolsBar: UIView {
-    fileprivate var textAlignmentBtn:UIButton = {
-        let btn = UIButton.init(type: UIButtonType.custom)
+    fileprivate var textAlignmentBtn:TLButton = {
+        let btn = TLButton.init(type: UIButtonType.custom)
+        btn.showsTouchWhenHighlighted = true
         btn.setImage(#imageLiteral(resourceName: "story_publish_icon_align_center"), for: .normal)
         return btn
     }()
     
-    fileprivate var confrimBtn: UIButton = {
-        let btn = UIButton.init(type: UIButtonType.custom)
+    fileprivate var confrimBtn: TLButton = {
+        let btn = TLButton.init(type: UIButtonType.custom)
+        btn.showsTouchWhenHighlighted = true
         btn.setTitle("确定", for: .normal)
         btn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
         return btn

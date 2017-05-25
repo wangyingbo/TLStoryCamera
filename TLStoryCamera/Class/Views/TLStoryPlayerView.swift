@@ -20,8 +20,9 @@ class TLStoryPlayerView: TLStoryPreviewView {
     fileprivate var movieFile:GPUImageMovie?
     fileprivate var movieWriter:GPUImageMovieWriter?
     
-    fileprivate lazy var audioEnableBtn:UIButton = {
-        let btn = UIButton.init(type: UIButtonType.custom)
+    fileprivate lazy var audioEnableBtn:TLButton = {
+        let btn = TLButton.init(type: UIButtonType.custom)
+        btn.showsTouchWhenHighlighted = true
         btn.setImage(#imageLiteral(resourceName: "story_publish_icon_voice_on"), for: .normal)
         btn.setImage(#imageLiteral(resourceName: "story_publish_icon_voice_off"), for: .selected)
         btn.addTarget(self, action: #selector(audioEnableAction), for: .touchUpInside)

@@ -11,15 +11,17 @@ import UIKit
 public class TLStoryViewController: UIViewController {
     fileprivate var cameraView:TLCameraView?
     fileprivate lazy var startBtn = TLHoopButton.init(frame: CGRect.init(x: 0, y: 0, width: 80, height: 80))
-    fileprivate lazy var flashBtn:UIButton = {
-        let btn = UIButton.init(type: UIButtonType.custom)
+    fileprivate lazy var flashBtn:TLButton = {
+        let btn = TLButton.init(type: UIButtonType.custom)
+        btn.showsTouchWhenHighlighted = true
         btn.setImage(#imageLiteral(resourceName: "story_publish_icon_flashlight_auto"), for: .normal)
         btn.addTarget(self, action: #selector(flashAction), for: .touchUpInside)
         return btn
     }()
     
-    fileprivate lazy var switchBtn:UIButton = {
-        let btn = UIButton.init(type: UIButtonType.custom)
+    fileprivate lazy var switchBtn:TLButton = {
+        let btn = TLButton.init(type: UIButtonType.custom)
+        btn.showsTouchWhenHighlighted = true
         btn.setImage(#imageLiteral(resourceName: "story_publish_icon_cam_turn"), for: .normal)
         btn.addTarget(self, action: #selector(switchAction), for: .touchUpInside)
         return btn
@@ -196,14 +198,11 @@ extension TLStoryViewController : TLHoopButtonDelegate {
 extension TLStoryViewController : TLStoryPreviewDelegate {
     func storyPreviewClose() {
         cameraView?.resumeCamera()
-        self.startBtn.alpha = 0
-        self.startBtn.isHidden = false
         UIView.animate(withDuration: 0.25) {
             self.flashBtn.alpha = 1
             self.switchBtn.alpha = 1
-            self.startBtn.alpha = 1
         }
-        
+        self.startBtn.show()
         photoLibraryHintView?.isHidden = false
         self.swipeUp(enable: true)
     }
@@ -214,7 +213,7 @@ extension TLStoryViewController: TLPhotoLibraryPickerViewDelegate {
         self.photoLibraryPicker(hidden: true)
         self.showPhotoPreview(imgData: imgData)
     }
-
+    
     func photoLibraryPickerDidSelectVideo(url: URL) {
         self.photoLibraryPicker(hidden: true)
         self.showPreview(type: .video, url: url)

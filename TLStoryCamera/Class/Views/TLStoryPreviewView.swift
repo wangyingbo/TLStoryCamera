@@ -16,36 +16,41 @@ class TLStoryPreviewView: UIView {
     
     public var editedImg:UIImage?
     
-    public lazy var closeBtn:UIButton = {
-        let btn = UIButton.init(type: UIButtonType.custom)
+    public lazy var closeBtn:TLButton = {
+        let btn = TLButton.init(type: UIButtonType.custom)
+        btn.showsTouchWhenHighlighted = true
         btn.setImage(#imageLiteral(resourceName: "story_icon_close"), for: .normal)
         btn.addTarget(self, action: #selector(closeAction), for: .touchUpInside)
         return btn
     }()
     
-    public lazy var drawBtn:UIButton = {
-        let btn = UIButton.init(type: UIButtonType.custom)
+    public lazy var drawBtn:TLButton = {
+        let btn = TLButton.init(type: UIButtonType.custom)
+        btn.showsTouchWhenHighlighted = true
         btn.setImage(#imageLiteral(resourceName: "story_publish_icon_drawing_tool"), for: .normal)
         btn.addTarget(self, action: #selector(drawAction), for: .touchUpInside)
         return btn
     }()
     
-    public lazy var tagsBtn:UIButton = {
-        let btn = UIButton.init(type: UIButtonType.custom)
+    public lazy var tagsBtn:TLButton = {
+        let btn = TLButton.init(type: UIButtonType.custom)
+        btn.showsTouchWhenHighlighted = true
         btn.setImage(#imageLiteral(resourceName: "story_publish_icon_tags"), for: .normal)
         btn.addTarget(self, action: #selector(addTagsAction), for: .touchUpInside)
         return btn
     }()
     
-    public lazy var textBtn:UIButton = {
-        let btn = UIButton.init(type: UIButtonType.custom)
+    public lazy var textBtn:TLButton = {
+        let btn = TLButton.init(type: UIButtonType.custom)
+        btn.showsTouchWhenHighlighted = true
         btn.setImage(#imageLiteral(resourceName: "story_publish_icon_text"), for: .normal)
         btn.addTarget(self, action: #selector(addTextAction), for: .touchUpInside)
         return btn
     }()
     
-    public lazy var saveBtn:UIButton = {
-        let btn = UIButton.init(type: UIButtonType.custom)
+    public lazy var saveBtn:TLButton = {
+        let btn = TLButton.init(type: UIButtonType.custom)
+        btn.showsTouchWhenHighlighted = true
         btn.setImage(#imageLiteral(resourceName: "story_publish_icon_download"), for: .normal)
         btn.addTarget(self, action: #selector(saveAction), for: .touchUpInside)
         return btn

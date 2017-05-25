@@ -31,7 +31,7 @@ class TLStoryConfiguration: NSObject {
                 AVVideoProfileLevelKey : AVVideoProfileLevelH264Main31,
                 AVVideoAllowFrameReorderingKey : false,
                 //码率
-                AVVideoAverageBitRateKey : 720 * 1280 * 3 / 2.0
+                AVVideoAverageBitRateKey : 720 * 1280 * 3
         ]
     ]
     

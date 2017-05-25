@@ -99,6 +99,27 @@ class TLHoopButton: UIControl {
         self.addTarget(self, action: #selector(draggedAction), for: .touchDragOutside)
     }
     
+    public func show() {
+        self.isHidden = false
+        UIView.animate(withDuration: 0.25, animations: {
+            self.centerY -= 50
+            self.alpha = 1
+        })
+    }
+    
+    
+    @objc fileprivate func complete() {
+        timer?.invalidate()
+        timer = nil
+        
+        self.reset()
+        self.delegete?.hoopComplete(hoopButton: self, type: self.progress < CGFloat(TLStoryConfiguration.minRecordingTime) ? .photo : .video)
+        
+        percent = 0
+        progress = 0
+        self.setNeedsDisplay()
+    }
+    
     @objc fileprivate func startAction(sender:UIButton) {
         self.bounds = CGRect.init(x: 0, y: 0, width: zoomInSize.width, height: zoomInSize.height)
         self.center = CGPoint.init(x: superview!.width / 2, y: superview!.bounds.height - 30 - 60)
@@ -115,17 +136,6 @@ class TLHoopButton: UIControl {
         timer?.add(to: RunLoop.current, forMode: RunLoopMode.commonModes)
     }
     
-    public func complete() {
-        timer?.invalidate()
-        timer = nil
-        
-        self.delegete?.hoopComplete(hoopButton: self, type: progress < CGFloat(TLStoryConfiguration.minRecordingTime) ? .photo : .video)
-        percent = 0
-        progress = 0
-        self.setNeedsDisplay()
-        self.reset()
-    }
-    
     @objc fileprivate func draggedAction(sender:UIButton, event:UIEvent) {
         let touch = (event.allTouches! as NSSet).anyObject() as! UITouch
         let point = touch.location(in: self)
@@ -136,17 +146,22 @@ class TLHoopButton: UIControl {
     }
     
     fileprivate func reset() {
-        self.isHidden = true
-        self.bounds = CGRect.init(x: 0, y: 0, width: zoomOutSize.width, height: zoomOutSize.height)
-        self.center = CGPoint.init(x: superview!.width / 2, y: superview!.bounds.height - 53 - 40)
-        self.insideCircleView.center = centerPoint
-        blureCircleView.isHidden = false
+        self.bounds = CGRect.init(x: 0, y: 0, width: self.zoomOutSize.width, height: self.zoomOutSize.height)
+        self.center = CGPoint.init(x: self.superview!.width / 2, y: self.superview!.bounds.height - 53 - 40)
         
-        blureCircleView.transform = blureCircleViewTransform!
-        blureCircleView.center = centerPoint
+        self.blureCircleView.transform = self.blureCircleViewTransform!
+        self.blureCircleView.center = centerPoint
         
-        insideCircleView.alpha = 1
-        insideCircleView.transform = insideCircleViewTransform!
+        self.insideCircleView.alpha = 1
+        self.insideCircleView.transform = self.insideCircleViewTransform!
+        self.insideCircleView.center = self.centerPoint
+        
+        UIView.animate(withDuration: 0.25, animations: {
+            self.centerY += 50
+            self.alpha = 0
+        }) { (x) in
+            self.isHidden = true
+        }
     }
     
     @objc fileprivate func countDownd() {

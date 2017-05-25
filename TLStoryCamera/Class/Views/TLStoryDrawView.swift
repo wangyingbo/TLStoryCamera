@@ -259,16 +259,18 @@ protocol TLStoryDrawToolBarDelegate: NSObjectProtocol {
 }
 
 class TLStoryDrawToolBar: UIView {
-    fileprivate var confrimBtn:UIButton = {
-        let btn = UIButton.init(type: UIButtonType.custom)
+    fileprivate var confrimBtn:TLButton = {
+        let btn = TLButton.init(type: UIButtonType.custom)
         btn.setTitle("确定", for: .normal)
+        btn.showsTouchWhenHighlighted = true
         btn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
         btn.addTarget(self, action: #selector(confrimAction), for: .touchUpInside)
         return btn
     }()
     
-    fileprivate var undoBtn:UIButton = {
-        let btn = UIButton.init(type: UIButtonType.custom)
+    fileprivate var undoBtn:TLButton = {
+        let btn = TLButton.init(type: UIButtonType.custom)
+        btn.showsTouchWhenHighlighted = true
         btn.setImage(#imageLiteral(resourceName: "story_publish_icon_drawing_cancel"), for: .normal)
         btn.addTarget(self, action: #selector(undoAction), for: .touchUpInside)
         return btn

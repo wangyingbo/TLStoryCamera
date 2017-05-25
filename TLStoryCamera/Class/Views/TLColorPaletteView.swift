@@ -26,8 +26,8 @@ class TLColorPaletteView: UIView {
         return control
     }()
     
-    fileprivate var sliderBtn:UIButton = {
-        let btn = UIButton.init(type: UIButtonType.custom)
+    fileprivate var sliderBtn:TLButton = {
+        let btn = TLButton.init(type: UIButtonType.custom)
         btn.setImage(#imageLiteral(resourceName: "story_publish_icon_drawing_tool_size"), for: .normal)
         btn.backgroundColor = UIColor.white
         btn.layer.cornerRadius = 15
