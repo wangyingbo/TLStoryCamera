@@ -50,32 +50,42 @@ class TLPhotoLibraryPickerView: UIView {
     }
     
     public func loadPhotos() {
-        self.imgs.removeAll()
-        
-        let options = PHFetchOptions()
-        options.sortDescriptors = [NSSortDescriptor.init(key: "creationDate", ascending: false)]
-        let results = PHAsset.fetchAssets(with: options)
-        let dayLate = NSDate().timeIntervalSince1970 - 24 * 60 * 60
-        
-        var count = 0
-        while count < results.count {
-            let r = results[count]
-            if r.creationDate?.timeIntervalSince1970 ?? 0 > dayLate {
-                imgs.append(r)
+        TLAuthorizedManager.requestAuthorization(with: .album) { (type, success) in
+            if !success {
+                self.hintLabel.text = "请在设置中允许访问相册"
+                self.hintLabel.sizeToFit()
+                self.hintLabel.center = CGPoint.init(x: self.width / 2, y: self.height / 2)
+                return
             }
-            count += 1
+            
+            self.imgs.removeAll()
+            
+            let options = PHFetchOptions()
+            options.sortDescriptors = [NSSortDescriptor.init(key: "creationDate", ascending: false)]
+            let results = PHAsset.fetchAssets(with: options)
+            let dayLate = NSDate().timeIntervalSince1970 - 24 * 60 * 60
+            
+            var count = 0
+            while count < results.count {
+                let r = results[count]
+                if r.creationDate?.timeIntervalSince1970 ?? 0 > dayLate {
+                    self.imgs.append(r)
+                }
+                count += 1
+            }
+            
+            if self.imgs.count > 0 {
+                self.hintLabel.text = "过去24小时"
+                self.hintLabel.sizeToFit()
+                self.hintLabel.center = CGPoint.init(x: self.width / 2, y: 23 / 2)
+            }else {
+                self.hintLabel.text = "过去24小时内没有照片"
+                self.hintLabel.sizeToFit()
+                self.hintLabel.center = CGPoint.init(x: self.width / 2, y: self.height / 2)
+            }
+            self.collectionView?.reloadData()
+
         }
-        
-        if imgs.count > 0 {
-            hintLabel.text = "过去24小时"
-            hintLabel.sizeToFit()
-            hintLabel.center = CGPoint.init(x: self.width / 2, y: 23 / 2)
-        }else {
-            hintLabel.text = "过去24小时内没有照片"
-            hintLabel.sizeToFit()
-            hintLabel.center = CGPoint.init(x: self.width / 2, y: self.height / 2)
-        }
-        self.collectionView?.reloadData()
     }
     
     required init?(coder aDecoder: NSCoder) {

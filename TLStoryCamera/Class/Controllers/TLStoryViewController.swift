@@ -10,7 +10,9 @@ import UIKit
 
 public class TLStoryViewController: UIViewController {
     fileprivate var cameraView:TLCameraView?
+    
     fileprivate lazy var startBtn = TLHoopButton.init(frame: CGRect.init(x: 0, y: 0, width: 80, height: 80))
+    
     fileprivate lazy var flashBtn:TLButton = {
         let btn = TLButton.init(type: UIButtonType.custom)
         btn.showsTouchWhenHighlighted = true
@@ -36,20 +38,18 @@ public class TLStoryViewController: UIViewController {
     fileprivate var swipeDown:UISwipeGestureRecognizer?
     
     fileprivate var coverBlurView = UIVisualEffectView.init(effect: UIBlurEffect.init(style: .light))
-        
+    
     public override func loadView() {
         self.view = TLStoryBgView.init(frame: UIScreen.main.bounds)
     }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = UIColor.white
+        self.view.backgroundColor = UIColor.black
         self.view.isUserInteractionEnabled = true
         
         cameraView = TLCameraView.init(frame: self.view.bounds)
         view.addSubview(cameraView!)
-        cameraView!.initRecording()
-        cameraView!.startCapture()
         
         startBtn.center = CGPoint.init(x: view.center.x, y: view.bounds.height - 52 - 40)
         startBtn.delegete = self
@@ -83,6 +83,30 @@ public class TLStoryViewController: UIViewController {
         swipeDown = UISwipeGestureRecognizer.init(target: self, action: #selector(swipeAction))
         swipeDown!.direction = .down
         coverBlurView.addGestureRecognizer(swipeDown!)
+        
+        self.checkAuthorized()
+    }
+    
+    fileprivate func checkAuthorized() {
+        let cameraAuthorization = TLAuthorizedManager.checkAuthorization(with: .camera)
+        let micAuthorization = TLAuthorizedManager.checkAuthorization(with: .mic)
+        
+        if cameraAuthorization && micAuthorization {
+            if cameraAuthorization {
+                cameraView!.initCamera()
+                cameraView!.configVideoRecording()
+                cameraView!.startCapture()
+            }
+            if micAuthorization {
+                cameraView!.configAudioRecording()
+            }
+        }else {
+            let authorizedVC = TLStoryAuthorizationController()
+            authorizedVC.view.frame = self.view.bounds
+            authorizedVC.delegate = self
+            self.view.addSubview(authorizedVC.view)
+            self.addChildViewController(authorizedVC)
+        }
     }
     
     @objc fileprivate func flashAction(sender: UIButton) {
@@ -174,13 +198,16 @@ public class TLStoryViewController: UIViewController {
 
 extension TLStoryViewController : TLHoopButtonDelegate {
     internal func hoopStart(hoopButton: TLHoopButton) {
-        cameraView?.initRecording()
+        cameraView?.configVideoRecording()
+        cameraView?.configAudioRecording()
         cameraView?.startRecording()
         photoLibraryHintView?.isHidden = true
     }
+    
     internal func hoopDrag(hoopButton: TLHoopButton, offsetY: CGFloat) {
         self.cameraView?.cameraZoom(offseY: offsetY)
     }
+    
     internal func hoopComplete(hoopButton: TLHoopButton, type: StoryType) {
         if type == .photo {
             self.cameraView?.capturePhoto(complete: { [weak self] (x) in
@@ -223,6 +250,18 @@ extension TLStoryViewController: TLPhotoLibraryPickerViewDelegate {
         self.photoLibraryPicker(hidden: true)
         self.startBtn.reset()
         self.showPreview(type: .video, url: url)
+    }
+}
+
+extension TLStoryViewController: TLStoryAuthorizedDelegate {
+    func requestMicAuthorizeSuccess() {
+        cameraView?.configAudioRecording()
+    }
+    
+    func requestCameraAuthorizeSuccess() {
+        cameraView!.initCamera()
+        cameraView!.configVideoRecording()
+        cameraView!.startCapture()
     }
 }
 

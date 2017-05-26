@@ -10,11 +10,16 @@ import UIKit
 import GPUImage
 
 class TLCameraView: GPUImageView {
-    fileprivate var videoCamera = GPUImageStillCamera.init(sessionPreset: TLStoryConfiguration.captureSessionPreset, cameraPosition: .back)
+    fileprivate var videoCamera:GPUImageStillCamera?
+    
     fileprivate var filterView:GPUImageView?
+    
     fileprivate var beautifyFilter = TLStoryConfiguration.openBeauty ? GPUImageBeautifyFilter.init() : GPUImageFilter.init()
+    
     fileprivate var movieWriter:GPUImageMovieWriter?
+    
     fileprivate var currentVideoPath:URL?
+    
     fileprivate var currentPhotoPath:URL?
     
     fileprivate var focusRing:UIView = {
@@ -50,13 +55,7 @@ class TLCameraView: GPUImageView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        isUserInteractionEnabled = true
-        videoCamera?.outputImageOrientation = .portrait
-        videoCamera?.horizontallyMirrorFrontFacingCamera = true
-        videoCamera?.removeAllTargets()
-        videoCamera!.addTarget(beautifyFilter as! GPUImageInput)
-        beautifyFilter.addTarget(self)
+        self.isUserInteractionEnabled = false
         
         self.addSubview(focusRing)
         focusAnim.delegate = self
@@ -96,14 +95,28 @@ class TLCameraView: GPUImageView {
         movieWriter?.startRecording()
     }
     
-    public func initRecording() {
+    public func initCamera() {
+        isUserInteractionEnabled = true
+
+        videoCamera = GPUImageStillCamera.init(sessionPreset: TLStoryConfiguration.captureSessionPreset, cameraPosition: .back)
+        videoCamera!.outputImageOrientation = .portrait
+        videoCamera!.horizontallyMirrorFrontFacingCamera = true
+        videoCamera!.removeAllTargets()
+        videoCamera!.addTarget(beautifyFilter as! GPUImageInput)
+        beautifyFilter.addTarget(self)
+    }
+    
+    public func configVideoRecording() {
         currentVideoPath = getVideoFilePath()
         let size = CGSize.init(width: TLStoryConfiguration.videoSetting["AVVideoWidthKey"] as! Int, height: TLStoryConfiguration.videoSetting["AVVideoHeightKey"] as! Int)
         movieWriter = GPUImageMovieWriter.init(movieURL: self.currentVideoPath, size: size, fileType: TLStoryConfiguration.videoFileType, outputSettings: TLStoryConfiguration.videoSetting)
-        movieWriter?.setHasAudioTrack(true, audioSettings: TLStoryConfiguration.audioSetting)
         beautifyFilter.addTarget(self.movieWriter!)
-        videoCamera?.audioEncodingTarget = movieWriter
         movieWriter?.encodingLiveVideo = true
+    }
+    
+    public func configAudioRecording() {
+        movieWriter?.setHasAudioTrack(true, audioSettings: TLStoryConfiguration.audioSetting)
+        videoCamera?.audioEncodingTarget = movieWriter
     }
     
     public func rotateCamera() {
@@ -243,7 +256,6 @@ class TLCameraView: GPUImageView {
         fatalError("init(coder:) has not been implemented")
     }
 }
-
 
 extension TLCameraView: CAAnimationDelegate {
     func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {

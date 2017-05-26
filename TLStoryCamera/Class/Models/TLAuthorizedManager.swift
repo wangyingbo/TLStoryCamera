@@ -9,32 +9,28 @@
 import UIKit
 import Photos
 
-protocol TLAuthorizedManagerDelegate: NSObjectProtocol {
-    func authorization(type:TLAuthorizedManager.AuthorizedType, authorized:Bool)
-}
+typealias AuthorizedCallback = (TLAuthorizedManager.AuthorizedType, Bool) -> Void
 
 class TLAuthorizedManager: NSObject {
-    public weak var delegate:TLAuthorizedManagerDelegate?
-    
     public enum AuthorizedType {
         case mic
         case camera
         case album
     }
     
-    public func requestAuthorization(with type:AuthorizedType) {
+    public static func requestAuthorization(with type:AuthorizedType, callback:@escaping AuthorizedCallback) {
         if type == .mic {
-            self.requestMicAuthorizationStatus()
+            self.requestMicAuthorizationStatus(callback)
         }
         if type == .camera {
-            self.requestCameraAuthorizationStatus()
+            self.requestCameraAuthorizationStatus(callback)
         }
         if type == .album {
-            self.requestAlbumAuthorizationStatus()
+            self.requestAlbumAuthorizationStatus(callback)
         }
     }
     
-    public func checkAuthorization(with type:AuthorizedType) -> Bool {
+    public static func checkAuthorization(with type:AuthorizedType) -> Bool {
         if type == .mic {
             return AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeAudio) == .authorized
         }
@@ -47,52 +43,66 @@ class TLAuthorizedManager: NSObject {
         return false
     }
     
-    fileprivate func requestMicAuthorizationStatus() {
+    public static func openAuthorizationSetting() {
+        UIApplication.shared.open(URL.init(string: UIApplicationOpenSettingsURLString)!, options: [:], completionHandler: nil)
+    }
+    
+    fileprivate static func requestMicAuthorizationStatus(_ callabck:@escaping AuthorizedCallback) {
         let status = AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeAudio)
         if status == .authorized {
-            self.callDelegate(with: .mic, authorized: true)
+            DispatchQueue.main.async {
+                callabck(.mic, true)
+            }
         }else if status == .notDetermined {
             AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeAudio, completionHandler: { (granted) in
-                self.callDelegate(with: .mic, authorized: granted)
+                DispatchQueue.main.async {
+                    callabck(.mic, granted)
+                }
             })
         }else if (status == .denied) {
-            UIApplication.shared.open(URL.init(string: UIApplicationOpenSettingsURLString)!, options: [:], completionHandler: nil)
+            DispatchQueue.main.async {
+                callabck(.mic, false)
+            }
+            self.openAuthorizationSetting()
         }
     }
     
-    fileprivate func requestCameraAuthorizationStatus() {
+    fileprivate static func requestCameraAuthorizationStatus(_ callabck:@escaping AuthorizedCallback) {
         let status = AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo)
         if status == .authorized {
-            self.callDelegate(with: .camera, authorized: true)
+            DispatchQueue.main.async {
+                callabck(.camera, true)
+            }
         }else if status == .notDetermined {
             AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo, completionHandler: { (granted) in
-                self.callDelegate(with: .camera, authorized: granted)
+                DispatchQueue.main.async {
+                    callabck(.camera, granted)
+                }
             })
         }else if (status == .denied) {
-            UIApplication.shared.open(URL.init(string: UIApplicationOpenSettingsURLString)!, options: [:], completionHandler: nil)
+            DispatchQueue.main.async {
+                callabck(.camera, false)
+            }
+            self.openAuthorizationSetting()
         }
     }
     
-    fileprivate func requestAlbumAuthorizationStatus() {
+    fileprivate static func requestAlbumAuthorizationStatus(_ callabck:@escaping AuthorizedCallback) {
         let status = PHPhotoLibrary.authorizationStatus()
         if status == .authorized {
-            self.callDelegate(with: .album, authorized: true)
+            DispatchQueue.main.async {
+                callabck(.album, true)
+            }
         }else if status == .notDetermined {
-            PHPhotoLibrary.requestAuthorization({ (s) in
-                if s == .authorized {
-                    self.callDelegate(with: .album, authorized: true)
-                }else {
-                    self.callDelegate(with: .album, authorized: false)
+            PHPhotoLibrary.requestAuthorization({ (granted) in
+                DispatchQueue.main.async {
+                    callabck(.camera, granted == .authorized)
                 }
             })
         }else if status == .denied {
-            UIApplication.shared.open(URL.init(string: UIApplicationOpenSettingsURLString)!, options: [:], completionHandler: nil)
-        }
-    }
-    
-    func callDelegate(with type:AuthorizedType, authorized:Bool) {
-        DispatchQueue.main.async {
-            self.delegate?.authorization(type: type, authorized: authorized)
+            DispatchQueue.main.async {
+                callabck(.camera, false)
+            }
         }
     }
 }

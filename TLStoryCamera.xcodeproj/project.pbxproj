@@ -10,6 +10,8 @@
 		15FC21342681B49F4B301DBA /* Pods_TLStoryCamera.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD9422C59A5198DD0D677E8D /* Pods_TLStoryCamera.framework */; };
 		4B3647C11ED017F3002B17FC /* TLStoryTextEditerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3647C01ED017F3002B17FC /* TLStoryTextEditerView.swift */; };
 		4B46B8EB1ED7226E00CEFFF4 /* TLButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B46B8EA1ED7226E00CEFFF4 /* TLButton.swift */; };
+		4B46B8ED1ED8555200CEFFF4 /* TLAuthorizedManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B46B8EC1ED8555200CEFFF4 /* TLAuthorizedManager.swift */; };
+		4B46B8F11ED8686E00CEFFF4 /* TLStoryAuthorizationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B46B8F01ED8686E00CEFFF4 /* TLStoryAuthorizationController.swift */; };
 		4B6443391ED0960900D6AEB6 /* WBStoryStickers.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4B6443381ED0960900D6AEB6 /* WBStoryStickers.plist */; };
 		4B8682821ECB475E00C6BB53 /* TLStoryDrawView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B8682811ECB475E00C6BB53 /* TLStoryDrawView.swift */; };
 		4B8682871ECB4ECE00C6BB53 /* TLColorPaletteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B8682861ECB4ECE00C6BB53 /* TLColorPaletteView.swift */; };
@@ -41,6 +43,8 @@
 		325AFAF6849D5513C06F53DD /* Pods-TLStoryCamera.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TLStoryCamera.release.xcconfig"; path = "Pods/Target Support Files/Pods-TLStoryCamera/Pods-TLStoryCamera.release.xcconfig"; sourceTree = "<group>"; };
 		4B3647C01ED017F3002B17FC /* TLStoryTextEditerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLStoryTextEditerView.swift; sourceTree = "<group>"; };
 		4B46B8EA1ED7226E00CEFFF4 /* TLButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLButton.swift; sourceTree = "<group>"; };
+		4B46B8EC1ED8555200CEFFF4 /* TLAuthorizedManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLAuthorizedManager.swift; sourceTree = "<group>"; };
+		4B46B8F01ED8686E00CEFFF4 /* TLStoryAuthorizationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLStoryAuthorizationController.swift; sourceTree = "<group>"; };
 		4B6443381ED0960900D6AEB6 /* WBStoryStickers.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = WBStoryStickers.plist; sourceTree = "<group>"; };
 		4B8682811ECB475E00C6BB53 /* TLStoryDrawView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLStoryDrawView.swift; sourceTree = "<group>"; };
 		4B8682861ECB4ECE00C6BB53 /* TLColorPaletteView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLColorPaletteView.swift; sourceTree = "<group>"; };
@@ -150,6 +154,7 @@
 			isa = PBXGroup;
 			children = (
 				C64E77671EC01052005B09B6 /* TLStoryViewController.swift */,
+				4B46B8F01ED8686E00CEFFF4 /* TLStoryAuthorizationController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -158,6 +163,7 @@
 			isa = PBXGroup;
 			children = (
 				C63FA4D11EC07A41003690DB /* TLStoryConfiguration.swift */,
+				4B46B8EC1ED8555200CEFFF4 /* TLAuthorizedManager.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -347,6 +353,7 @@
 				4B8682821ECB475E00C6BB53 /* TLStoryDrawView.swift in Sources */,
 				4B46B8EB1ED7226E00CEFFF4 /* TLButton.swift in Sources */,
 				C61582B01EC021C2003C82AC /* UIView+TLStory.swift in Sources */,
+				4B46B8ED1ED8555200CEFFF4 /* TLAuthorizedManager.swift in Sources */,
 				C6DA55EB1EC05A1300961DAF /* TLCameraView.swift in Sources */,
 				C6A77E231EC2D704008BC6BD /* TLStoryPlayerView.swift in Sources */,
 				4BC059D21ECDD1BF00D68800 /* TLStickerTextView.swift in Sources */,
@@ -354,6 +361,7 @@
 				C657F0601EC959FF00246393 /* UIImage+TLStory.swift in Sources */,
 				C64E776D1EC01FB6005B09B6 /* TLHoopButton.swift in Sources */,
 				C64E77681EC01052005B09B6 /* TLStoryViewController.swift in Sources */,
+				4B46B8F11ED8686E00CEFFF4 /* TLStoryAuthorizationController.swift in Sources */,
 				C64E77501EC00D9C005B09B6 /* AppDelegate.swift in Sources */,
 				C6A77E1E1EC2BA86008BC6BD /* TLStoryPreviewView.swift in Sources */,
 				C657F0591EC94D5000246393 /* TLStickerPickerView.swift in Sources */,
