@@ -15,9 +15,11 @@ class TLStoryPlayerView: TLStoryPreviewView {
     fileprivate var isWriting: Bool = false
     
     fileprivate var player:AVPlayer? = nil
+    
     fileprivate var url:URL?
     
     fileprivate var movieFile:GPUImageMovie?
+    
     fileprivate var movieWriter:GPUImageMovieWriter?
     
     fileprivate lazy var audioEnableBtn:TLButton = {

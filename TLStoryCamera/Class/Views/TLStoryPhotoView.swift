@@ -17,6 +17,7 @@ class TLStoryPhotoView: TLStoryPreviewView {
         imgView.contentMode = .scaleAspectFill
         return imgView
     }()
+    
     fileprivate var sourceImg:UIImage?
     
     init(frame: CGRect, url:URL) {

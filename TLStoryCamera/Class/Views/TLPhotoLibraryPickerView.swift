@@ -46,10 +46,7 @@ class TLPhotoLibraryPickerView: UIView {
         collectionView!.showsHorizontalScrollIndicator = false
         collectionView!.register(TLPhotoLibraryPickerCell.self, forCellWithReuseIdentifier: "cell")
         self.addSubview(collectionView!)
-        
         self.addSubview(hintLabel)
-        
-        self.loadPhotos()
     }
     
     public func loadPhotos() {
