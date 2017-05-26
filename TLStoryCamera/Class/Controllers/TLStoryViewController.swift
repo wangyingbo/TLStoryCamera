@@ -41,7 +41,7 @@ public class TLStoryViewController: UIViewController {
         self.view = TLStoryBgView.init(frame: UIScreen.main.bounds)
     }
     
-    public func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
         self.view.isUserInteractionEnabled = true
