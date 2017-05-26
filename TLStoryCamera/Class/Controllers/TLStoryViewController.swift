@@ -36,7 +36,7 @@ public class TLStoryViewController: UIViewController {
     fileprivate var swipeDown:UISwipeGestureRecognizer?
     
     fileprivate var coverBlurView = UIVisualEffectView.init(effect: UIBlurEffect.init(style: .light))
-    
+        
     public override func loadView() {
         self.view = TLStoryBgView.init(frame: UIScreen.main.bounds)
     }
@@ -94,7 +94,11 @@ public class TLStoryViewController: UIViewController {
     }
     
     @objc fileprivate func switchAction(sender: UIButton) {
-        cameraView?.rotateCamera()
+        UIView.animate(withDuration: 0.3, animations: {
+            sender.transform = sender.transform.rotated(by: CGFloat(Double.pi))
+        }) { (x) in
+            self.cameraView?.rotateCamera()
+        }
     }
     
     @objc fileprivate func swipeAction(sender:UISwipeGestureRecognizer) {
@@ -211,11 +215,13 @@ extension TLStoryViewController : TLStoryPreviewDelegate {
 extension TLStoryViewController: TLPhotoLibraryPickerViewDelegate {
     internal func photoLibraryPickerDidSelectPhoto(imgData: Data) {
         self.photoLibraryPicker(hidden: true)
+        self.startBtn.reset()
         self.showPhotoPreview(imgData: imgData)
     }
     
     internal func photoLibraryPickerDidSelectVideo(url: URL) {
         self.photoLibraryPicker(hidden: true)
+        self.startBtn.reset()
         self.showPreview(type: .video, url: url)
     }
 }

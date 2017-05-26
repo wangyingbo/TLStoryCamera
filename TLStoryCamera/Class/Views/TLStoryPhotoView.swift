@@ -88,7 +88,6 @@ class TLStoryPhotoView: TLStoryPreviewView {
                             SVProgressHUD.dismiss()
                             SVProgressHUD.showSuccess(withStatus: "已保存到相册")
                             self.closeAction()
-                            self.delegate?.storyPreviewClose()
                         }
                     })
                 } catch {

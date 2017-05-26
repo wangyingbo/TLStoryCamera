@@ -44,7 +44,7 @@ class TLStoryConfiguration: NSObject {
     ]
     
     //视频采集格式
-    public static let videoFileType:String = AVFileTypeMPEG4
+    public static let videoFileType:String = AVFileTypeQuickTimeMovie
     
     //视频采集尺寸
     public static let captureSessionPreset:String = AVCaptureSessionPreset1280x720

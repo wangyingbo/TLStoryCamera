@@ -17,11 +17,24 @@ class TLCameraView: GPUImageView {
     fileprivate var currentVideoPath:URL?
     fileprivate var currentPhotoPath:URL?
     
+    fileprivate var focusRing:UIView = {
+        let view = UIView.init(frame: CGRect.init(x: 0, y: 0, width: 50, height: 50))
+        view.backgroundColor = UIColor.clear
+        view.layer.borderColor = UIColor.white.cgColor
+        view.layer.borderWidth = 1
+        view.layer.cornerRadius = 25
+        view.isHidden = true
+        return view
+    }()
+    
+    fileprivate var animEnd:Bool = true
+    
     fileprivate var focusAnim:CAAnimationGroup = {
         let zoomAnim = CABasicAnimation.init(keyPath: "transform.scale")
-        zoomAnim.fromValue = 1.5
-        zoomAnim.toValue = 1
+        zoomAnim.fromValue = 1.8
         zoomAnim.byValue = 0.8
+        zoomAnim.toValue = 1
+        zoomAnim.timingFunction = CAMediaTimingFunction.init(name: kCAMediaTimingFunctionEaseOut)
         
         let alphaAnim = CABasicAnimation.init(keyPath: "opacity")
         alphaAnim.fromValue = 1
@@ -29,8 +42,9 @@ class TLCameraView: GPUImageView {
         
         let group = CAAnimationGroup.init()
         group.animations = [zoomAnim,alphaAnim]
-        group.duration = 0.3 
-        group.isRemovedOnCompletion = true
+        group.duration = 0.3
+        group.isRemovedOnCompletion = false
+        group.fillMode = kCAFillModeForwards
         return group
     }()
     
@@ -43,6 +57,9 @@ class TLCameraView: GPUImageView {
         videoCamera?.removeAllTargets()
         videoCamera!.addTarget(beautifyFilter as! GPUImageInput)
         beautifyFilter.addTarget(self)
+        
+        self.addSubview(focusRing)
+        focusAnim.delegate = self
     }
     
     public func cameraSwitch(open:Bool) {
@@ -74,7 +91,7 @@ class TLCameraView: GPUImageView {
     public func stopCapture() {
         videoCamera?.stopCapture()
     }
-
+    
     public func startRecording() {
         movieWriter?.startRecording()
     }
@@ -170,6 +187,16 @@ class TLCameraView: GPUImageView {
         return mode
     }
     
+    fileprivate func showFocusRing(point:CGPoint) {
+        if !animEnd {
+            return
+        }
+        focusRing.isHidden = false
+        focusRing.center = point
+        animEnd = false
+        focusRing.layer.add(focusAnim, forKey: nil)
+    }
+    
     fileprivate func getVideoFilePath() -> URL {
         let path = TLStoryConfiguration.videoPath
         let filePath = path?.appending("/\(Int(Date().timeIntervalSince1970)).mp4")
@@ -208,9 +235,24 @@ class TLCameraView: GPUImageView {
         } catch {
             
         }
+        
+        self.showFocusRing(point: point)
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+
+extension TLCameraView: CAAnimationDelegate {
+    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
+        if !flag {
+            return
+        }
+        focusRing.layer.removeAllAnimations()
+        focusRing.isHidden = true
+        focusRing.alpha = 0
+        animEnd = true
     }
 }

@@ -151,7 +151,6 @@ class TLPhotoLibraryPickerCell: UICollectionViewCell {
             self.thumImgview.image = image
         }
         
-        durationLabel.isHidden = asset.mediaType != .video
         let time = Int(asset.duration)
         let h = time / 3600
         let min = Int((time - h * 3600) / 60)
@@ -160,6 +159,7 @@ class TLPhotoLibraryPickerCell: UICollectionViewCell {
         let minStr = min <= 0 ? "0:" : min < 10 ? "0\(min):" : "\(min):"
         let sStr = s <= 0 ? "" : s < 10 ? "0\(s)" : "\(s)"
         
+        durationLabel.isHidden = asset.mediaType != .video || time == 0
         durationLabel.text = hourStr + minStr + sStr
         durationLabel.sizeToFit()
         durationLabel.center = CGPoint.init(x: self.width - durationLabel.width / 2 - 5, y: self.height - durationLabel.height / 2 - 5)

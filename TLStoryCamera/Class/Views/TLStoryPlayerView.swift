@@ -152,7 +152,6 @@ class TLStoryPlayerView: TLStoryPreviewView {
                 DispatchQueue.main.async {
                     SVProgressHUD.showSuccess(withStatus: "已保存到相册")
                     self?.closeAction()
-                    self?.delegate?.storyPreviewClose()
                 }
             })
         }

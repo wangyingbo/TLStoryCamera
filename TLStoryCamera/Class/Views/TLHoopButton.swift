@@ -111,13 +111,34 @@ class TLHoopButton: UIControl {
     @objc fileprivate func complete() {
         timer?.invalidate()
         timer = nil
-        
-        self.reset()
         self.delegete?.hoopComplete(hoopButton: self, type: self.progress < CGFloat(TLStoryConfiguration.minRecordingTime) ? .photo : .video)
-        
         percent = 0
         progress = 0
         self.setNeedsDisplay()
+        self.reset()
+    }
+    
+    public func reset() {
+        self.bounds = CGRect.init(x: 0, y: 0, width: self.zoomOutSize.width, height: self.zoomOutSize.height)
+        self.center = CGPoint.init(x: self.superview!.width / 2, y: self.superview!.bounds.height - 53 - 40)
+        
+        if let t = self.blureCircleViewTransform {
+            self.blureCircleView.transform = t
+        }
+        if let t = self.insideCircleViewTransform {
+            self.insideCircleView.transform = t
+        }
+        self.blureCircleView.center = centerPoint
+        
+        self.insideCircleView.alpha = 1
+        self.insideCircleView.center = self.centerPoint
+        
+        UIView.animate(withDuration: 0.25, animations: {
+            self.centerY += 50
+            self.alpha = 0
+        }) { (x) in
+            self.isHidden = true
+        }
     }
     
     @objc fileprivate func startAction(sender:UIButton) {
@@ -142,29 +163,6 @@ class TLHoopButton: UIControl {
         let offsetY = point.y < 0 ? -point.y : 0;
         if offsetY < MaxDragOffset && offsetY > 0 {
             delegete?.hoopDrag(hoopButton: self, offsetY: offsetY)
-        }
-    }
-    
-    fileprivate func reset() {
-        self.bounds = CGRect.init(x: 0, y: 0, width: self.zoomOutSize.width, height: self.zoomOutSize.height)
-        self.center = CGPoint.init(x: self.superview!.width / 2, y: self.superview!.bounds.height - 53 - 40)
-        
-        if let t = self.blureCircleViewTransform {
-            self.blureCircleView.transform = t
-        }
-        if let t = self.insideCircleViewTransform {
-            self.insideCircleView.transform = t
-        }
-        self.blureCircleView.center = centerPoint
-        
-        self.insideCircleView.alpha = 1
-        self.insideCircleView.center = self.centerPoint
-        
-        UIView.animate(withDuration: 0.25, animations: {
-            self.centerY += 50
-            self.alpha = 0
-        }) { (x) in
-            self.isHidden = true
         }
     }
     
