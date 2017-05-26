@@ -103,6 +103,7 @@ class TLAuthorizedManager: NSObject {
             DispatchQueue.main.async {
                 callabck(.camera, false)
             }
+            self.openAuthorizationSetting()
         }
     }
 }

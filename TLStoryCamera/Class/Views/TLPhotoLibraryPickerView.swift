@@ -21,7 +21,18 @@ class TLPhotoLibraryPickerView: UIView {
         let label = UILabel.init()
         label.font = UIFont.systemFont(ofSize: 12)
         label.textColor = UIColor.init(colorHex: 0xffffff, alpha: 0.6)
+        label.textAlignment = .center
+        label.numberOfLines = 0
         return label
+    }()
+    
+    fileprivate var authorizationBtn:TLButton = {
+        let btn = TLButton.init(type: UIButtonType.custom)
+        btn.setTitle("允许访问照片", for: .normal)
+        btn.setTitleColor(UIColor.init(colorHex: 0x4797e1, alpha: 1), for: .normal)
+        btn.titleLabel?.font = UIFont.systemFont(ofSize: 15)
+        btn.isHidden = true
+        return btn
     }()
     
     fileprivate var imgs = [PHAsset]()
@@ -47,17 +58,21 @@ class TLPhotoLibraryPickerView: UIView {
         collectionView!.register(TLPhotoLibraryPickerCell.self, forCellWithReuseIdentifier: "cell")
         self.addSubview(collectionView!)
         self.addSubview(hintLabel)
+        
+        self.addSubview(authorizationBtn)
+        authorizationBtn.addTarget(self, action: #selector(requestAlbumAuthorization), for: .touchUpInside)
+        authorizationBtn.sizeToFit()
+        authorizationBtn.center = CGPoint.init(x: self.width / 2, y: self.height - authorizationBtn.height / 2 - 30)
     }
     
     public func loadPhotos() {
-        TLAuthorizedManager.requestAuthorization(with: .album) { (type, success) in
-            if !success {
-                self.hintLabel.text = "请在设置中允许访问相册"
-                self.hintLabel.sizeToFit()
-                self.hintLabel.center = CGPoint.init(x: self.width / 2, y: self.height / 2)
-                return
-            }
-            
+        if !TLAuthorizedManager.checkAuthorization(with: .album) {
+            self.hintLabel.text = "要将最新的照片和视频加入故事，请允许\n访问照片"
+            self.hintLabel.font = UIFont.systemFont(ofSize: 15)
+            self.hintLabel.sizeToFit()
+            self.hintLabel.center = CGPoint.init(x: self.width / 2, y: 20 + self.hintLabel.height / 2)
+            self.authorizationBtn.isHidden = false
+        }else {
             self.imgs.removeAll()
             
             let options = PHFetchOptions()
@@ -76,15 +91,23 @@ class TLPhotoLibraryPickerView: UIView {
             
             if self.imgs.count > 0 {
                 self.hintLabel.text = "过去24小时"
+                self.hintLabel.font = UIFont.systemFont(ofSize: 12)
                 self.hintLabel.sizeToFit()
                 self.hintLabel.center = CGPoint.init(x: self.width / 2, y: 23 / 2)
             }else {
                 self.hintLabel.text = "过去24小时内没有照片"
+                self.hintLabel.font = UIFont.systemFont(ofSize: 12)
                 self.hintLabel.sizeToFit()
                 self.hintLabel.center = CGPoint.init(x: self.width / 2, y: self.height / 2)
             }
+            self.authorizationBtn.isHidden = true
             self.collectionView?.reloadData()
-
+        }
+    }
+    
+    @objc fileprivate func requestAlbumAuthorization() {
+        TLAuthorizedManager.requestAuthorization(with: .album) { (type, success) in
+            self.loadPhotos()
         }
     }
     
