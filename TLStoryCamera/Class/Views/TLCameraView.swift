@@ -53,9 +53,23 @@ class TLCameraView: GPUImageView {
         return group
     }()
     
+    fileprivate var tapGesture:UITapGestureRecognizer?
+    
+    fileprivate var doubleTapGesture:UITapGestureRecognizer?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.isUserInteractionEnabled = false
+        
+        tapGesture = UITapGestureRecognizer.init(target: self, action: #selector(tapAction))
+        tapGesture!.numberOfTapsRequired = 1
+        self.addGestureRecognizer(tapGesture!)
+        
+        doubleTapGesture = UITapGestureRecognizer.init(target: self, action: #selector(doubleTapAction))
+        doubleTapGesture!.numberOfTapsRequired = 2
+        self.addGestureRecognizer(doubleTapGesture!)
+        
+        tapGesture!.require(toFail: doubleTapGesture!)
         
         self.addSubview(focusRing)
         focusAnim.delegate = self
@@ -200,6 +214,29 @@ class TLCameraView: GPUImageView {
         return mode
     }
     
+    @objc fileprivate func tapAction(sender:UITapGestureRecognizer) {
+        let point = sender.location(in: self)
+        
+        if !videoCamera!.inputCamera.isFocusModeSupported(.autoFocus) || !videoCamera!.inputCamera.isFocusPointOfInterestSupported {
+            return
+        }
+        
+        do {
+            try videoCamera?.inputCamera.lockForConfiguration()
+            videoCamera!.inputCamera.focusMode = .autoFocus
+            videoCamera!.inputCamera.focusPointOfInterest = point
+            videoCamera!.inputCamera.unlockForConfiguration()
+        } catch {
+            
+        }
+        
+        self.showFocusRing(point: point)
+    }
+    
+    @objc fileprivate func doubleTapAction(sender:UITapGestureRecognizer) {
+        self.rotateCamera()
+    }
+    
     fileprivate func showFocusRing(point:CGPoint) {
         if !animEnd {
             return
@@ -230,26 +267,6 @@ class TLCameraView: GPUImageView {
             
         }
         return URL.init(fileURLWithPath: filePath!)
-    }
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        let touch = (touches as NSSet).anyObject() as! UITouch
-        let point = touch.location(in: self)
-        
-        if !videoCamera!.inputCamera.isFocusModeSupported(.autoFocus) || !videoCamera!.inputCamera.isFocusPointOfInterestSupported {
-            return
-        }
-        
-        do {
-            try videoCamera?.inputCamera.lockForConfiguration()
-            videoCamera!.inputCamera.focusMode = .autoFocus
-            videoCamera!.inputCamera.focusPointOfInterest = point
-            videoCamera!.inputCamera.unlockForConfiguration()
-        } catch {
-            
-        }
-        
-        self.showFocusRing(point: point)
     }
     
     required init?(coder aDecoder: NSCoder) {
